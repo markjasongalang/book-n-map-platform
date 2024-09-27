@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Merriweather', serif;
+    overflow-x: hidden;
+}
+
+::selection {
+    color: white;
+    background-color: #E74C3C;
+}
+
+.special-asterisk {
+    color: #E74C3C;
+    font-size: 16px;
+}
+
+button,
+input[type=submit] {
+    user-select: none;
+}
+
+nav {
+    padding: 10px 30px 10px 25px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(189, 195, 199, 0.5);
+}
+
+nav .logo {
+    height: 58px;
+    margin-top: 8px;
+}
+
+nav .menu ul {
+    list-style-type: none;
+}
+
+nav .menu li {
+    display: inline-block;
+    margin: 25px 0;
+    font-size: 13px;
+}
+
+nav .menu li a {
+    color: #E74C3C;
+    padding: 7px 25px;
+}
+
+nav .menu li a:hover {
+    cursor: pointer;
+    color: #EF7E6B;
+}
+
+nav .menu .register {
+    text-decoration: none;
+    border: 1px solid #E74C3C;
+}
+
+nav .menu .register:hover {
+    border: 1px solid #EF7E6B;
+}
+
+.bullet {
+    color: #D9D9D9;
+    margin: 0 3px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    outline: none;
+    font-family: 'Merriweather', serif;
+    color: #858585;
+    font-size: 14px;
+}
+
+.back-btn i {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.back-btn:hover {
+    cursor: pointer;
+}

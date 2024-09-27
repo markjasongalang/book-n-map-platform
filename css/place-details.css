@@ -1,0 +1,141 @@
+.outer-container {
+    width: 83%;
+    margin: 0 auto;
+    padding: 30px 0;
+}
+
+.inner-container {
+    margin-top: 25px;
+    display: flex;
+}
+
+.inner-container .main {
+    flex-basis: 65%;
+}
+
+.main .name {
+    font-weight: 500;
+    font-size: 27px;
+    color: #1D1D1D;
+}
+
+.main .city {
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.main .city,
+.main .last-updated {
+    color: #858585;
+    font-size: 13px;
+}
+
+.main .last-updated {
+    display: inline-block;
+}
+
+.main .ratings {
+    display: inline-block;
+    color: #F0BB40;
+}
+
+.main .image-slideshow {
+    margin-top: 7px;
+    /* Position the image container (needed to position the left and right arrows) */
+    position: relative;
+}
+
+.main .image-slideshow .slides {
+    display: none;
+}
+
+.main .image-slideshow .slides img {
+    width: 100%;
+    object-fit: contain;
+    height: 450px;
+    background-color: black;
+}
+
+.main .image-slideshow button {
+    cursor: pointer;
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: white;
+    outline: none;
+    padding: 16px;
+    position: absolute;
+    user-select: none;
+    top: 35%;
+}
+
+.main .image-slideshow button:hover {
+    background-color: rgba(189, 195, 199, 0.5);
+}
+
+.main .image-slideshow .next-btn {
+    right: 0;
+}
+
+.main .image-slideshow .thumbnails {
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.main .image-slideshow .active,
+.main .image-slideshow .thumbnails:hover {
+    opacity: 1;
+}
+
+.main .image-slideshow .row {
+    display: flex;
+    gap: 3px;
+}
+
+.main .image-slideshow .row img {
+    object-fit: cover;
+    /* Based on the 'gap' property above */
+    width: calc((100% / 4) - (3 * 3px / 4)); 
+}
+
+.main h2 {
+    margin: 20px 0 10px 0;
+    font-size: 18px;
+    font-weight: 400;
+    color: #1D1D1D;
+}
+
+.main p {
+    font-size: 14px;
+    color: #858585;
+    line-height: 2;
+}
+
+.main h4 {
+    margin: 10px 0;
+    font-weight: 400;
+    color: #1D1D1D;
+    font-size: 14px;
+}
+
+.inner-container .side {
+    flex-basis: 35%;
+    padding: 35px 0 0 30px;
+}
+
+.side h2 {
+    font-weight: 500;
+    font-size: 23px;
+    margin-bottom: 10px;
+    /* text-decoration: underline; */
+}
+
+.side .amenity {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(189, 195, 199, 0.5);
+}
+
+.side .amenity i {
+    margin-right: 10px;
+    font-size: 18px;
+}

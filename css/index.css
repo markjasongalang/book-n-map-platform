@@ -1,0 +1,149 @@
+.place-list {
+    width: 83%;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.place-list .search-form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.place-list .search-form i {
+    padding: 10px 5px 10px 10px;
+    color: #93989B;
+    border: 1px solid rgba(189, 195, 199, 0.5);
+    border-right: none;
+}
+
+.place-list .search-form .search-place {
+    flex: 1;
+    padding: 10px;
+    font-family: 'Merriweather', serif;
+    outline: none;
+    color: #1D1D1D;
+    border: 1px solid rgba(189, 195, 199, 0.5);
+    border-left: none;
+}
+
+.place-list .place-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px 15px;
+}
+
+.place-grid .place-item {
+    border: 1px solid rgba(189, 195, 199, 0.5);
+    text-decoration: none;
+    color: #858585;
+}
+.place-grid .place-item:hover {
+    background-color: #f0f0f0;
+    transition: background-color 0.3s ease;
+}
+
+.place-grid .place-item img {
+    width: 100%;
+}
+
+.place-item .content {
+    padding: 7px 12px 12px 12px;
+    text-wrap: wrap;
+}
+
+.place-item .content .place-name {
+    color: #1D1D1D;
+    font-size: 15px;
+}
+
+.place-item .content .ri-map-pin-line {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 20px;
+}
+
+.place-item .content .place-address {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 10px 0;
+    font-weight: 400;
+}
+
+.place-item .content .ratings i {
+    color: #F0BB40;
+}
+
+.newsletter {
+    width: 100%;
+    position: fixed;
+    background-color: white;
+    bottom: 0;
+    padding: 10px 25px;
+    border-top: 1px solid rgba(189, 195, 199, 0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.newsletter .content {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.newsletter .content div {
+    text-align: center;
+}
+
+.newsletter .content div h5 {
+    font-size: 14px;
+    color: #1D1D1D;
+}
+
+.newsletter .content div p {
+    font-size: 11px;
+    margin-top: 5px;
+    color: #93989B;
+}
+
+.newsletter .content form {
+    margin: 0 15px;
+}
+
+.newsletter .content form .email {
+    height: 100%;
+    padding: 0 7px;
+    font-family: 'Merriweather', serif;
+    color: #1D1D1D;
+    font-size: 13px;
+    width: 250px;
+    outline: none;
+    border: 1px solid rgba(189, 195, 199, 0.5);
+}
+
+.newsletter .content form .subscribe-btn {
+    height: 100%;
+    background: none;
+    padding: 0 10px;
+    border: none;
+    outline: none;
+    font-family: 'Merriweather', serif;
+    color: #E74C3C;
+    font-size: 13px;
+}
+
+.newsletter .content form .subscribe-btn:hover {
+    cursor: pointer;
+    color: #EF7E6B;
+}
+
+.newsletter .close-btn {
+    color: #BDC3C7;
+    font-size: 20px;
+}
+
+.newsletter .close-btn:hover {
+    color: #1D1D1D;
+    cursor: pointer;
+}
