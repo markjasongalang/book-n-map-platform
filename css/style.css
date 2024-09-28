@@ -27,14 +27,14 @@ input[type=submit] {
 }
 
 nav {
-    padding: 10px 30px 10px 25px;
+    padding: 0px 25px 0px 15px;
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid rgba(189, 195, 199, 0.5);
 }
 
 nav .logo {
-    height: 58px;
+    height: 46px;
     margin-top: 8px;
 }
 
@@ -44,13 +44,13 @@ nav .menu ul {
 
 nav .menu li {
     display: inline-block;
-    margin: 25px 0;
+    margin: 20px 0;
     font-size: 13px;
 }
 
 nav .menu li a {
     color: #E74C3C;
-    padding: 7px 25px;
+    padding: 5px 20px;
 }
 
 nav .menu li a:hover {

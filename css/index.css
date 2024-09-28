@@ -1,30 +1,52 @@
+.container {
+    width: 100%;
+    height: 92.4vh;
+    display: flex;
+}
+
+.container div {
+    flex-basis: 50%;
+}
+
+.container #map {
+    height: inherit;
+    border-right: 1px solid rgba(189, 195, 199, 0.5);
+}
+
+.container .mapboxgl-popup-content {
+    font-family: 'Merriweather', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    border-radius: 100%;
+    background-color: #F0BB40;
+}
+
 .place-list {
-    width: 83%;
-    margin: 0 auto;
-    padding: 40px 0;
+    height: inherit;
+    padding: 0 20px;
+    overflow-y: auto;
 }
 
 .place-list .search-form {
     display: flex;
     align-items: center;
-    margin-bottom: 30px;
+    margin: 15px 0;
+    border: 1px solid rgba(189, 195, 199, 0.5);
 }
 
 .place-list .search-form i {
     padding: 10px 5px 10px 10px;
     color: #93989B;
-    border: 1px solid rgba(189, 195, 199, 0.5);
-    border-right: none;
 }
 
 .place-list .search-form .search-place {
     flex: 1;
-    padding: 10px;
+    padding: 10px 10px 10px 5px;
     font-family: 'Merriweather', serif;
     outline: none;
     color: #1D1D1D;
-    border: 1px solid rgba(189, 195, 199, 0.5);
-    border-left: none;
+    border: none;
 }
 
 .place-list .place-grid {
@@ -38,7 +60,9 @@
     text-decoration: none;
     color: #858585;
 }
+
 .place-grid .place-item:hover {
+    cursor: pointer;
     background-color: #f0f0f0;
     transition: background-color 0.3s ease;
 }
@@ -74,7 +98,208 @@
     color: #F0BB40;
 }
 
-.newsletter {
+.place-detail {
+    display: none;
+    height: inherit;
+    padding: 15px 20px;
+    overflow-y: auto;
+}
+
+.place-detail .name {
+    font-weight: 500;
+    font-size: 25px;
+    margin-top: 15px;
+    color: #1D1D1D;
+}
+
+.place-detail .address {
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.place-detail .address,
+.place-detail .last-updated {
+    color: #858585;
+    font-size: 13px;
+}
+
+.place-detail .last-updated {
+    display: inline-block;
+}
+
+.place-detail .ratings {
+    display: inline-block;
+    color: #F0BB40;
+}
+
+.place-detail .image-slideshow {
+    margin-top: 7px;
+    /* Position the image container (needed to position the left and right arrows) */
+    position: relative;
+}
+
+.place-detail .image-slideshow .slides {
+    display: none;
+}
+
+.place-detail .image-slideshow .slides img {
+    width: 100%;
+    object-fit: contain;
+    height: 450px;
+    background-color: black;
+}
+
+.place-detail .image-slideshow button {
+    cursor: pointer;
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: white;
+    outline: none;
+    padding: 16px;
+    position: absolute;
+    user-select: none;
+    top: 35%;
+}
+
+.place-detail .image-slideshow button:hover {
+    background-color: rgba(189, 195, 199, 0.5);
+}
+
+.place-detail .image-slideshow .next-btn {
+    right: 0;
+}
+
+.place-detail .image-slideshow .thumbnails {
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.place-detail .image-slideshow .active,
+.place-detail .image-slideshow .thumbnails:hover {
+    opacity: 1;
+}
+
+.place-detail .image-slideshow .row {
+    display: flex;
+    gap: 3px;
+}
+
+.place-detail .image-slideshow .row img {
+    object-fit: cover;
+    /* Based on the 'gap' property above */
+    width: calc((100% / 4) - (3 * 3px / 4)); 
+}
+
+.place-detail h2 {
+    font-weight: 500;
+    font-size: 23px;
+    margin: 15px 0 5px 0;
+}
+
+.place-detail .amenities .amenity {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(189, 195, 199, 0.5);
+}
+
+.place-detail .amenities .amenity i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.place-detail .reviews {
+    margin-top: 20px;
+}
+
+.review-form .my-review {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    min-height: 100px;
+    font-family: 'Merriweather', serif;
+    outline: none;
+    color: #1D1D1D;
+    border: 1px solid rgba(189, 195, 199, 0.5);
+    resize: none;
+    overflow: hidden;
+}
+
+.star-rating {
+    display: inline-flex;
+    align-items: center;
+}
+
+.star {
+    font-size: 30px;
+    color: #ddd; /* Default gray for unselected stars */
+    cursor: pointer;
+    user-select: none;
+}
+
+.star.selected {
+    color: #F0BB40; /* Highlight color for selected stars */
+}
+
+#rating-display {
+    margin: 5px 10px 0 10px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #858585;
+}
+
+.review-form .submit-review {
+    text-decoration: none;
+    padding: 5px 20px;
+    display: inline-block;
+    color: #E74C3C;
+    background: none;
+    font-family: 'Merriweather', serif;
+    border: 1px solid #E74C3C;
+}
+
+.review-form .submit-review:hover {
+    cursor: pointer;
+    color: #EF7E6B;
+    border: 1px solid #EF7E6B;
+}
+
+.review-item {
+    padding: 10px 0;
+    margin: 10px 0;
+}
+
+.review-item img {
+    display: inline-block;
+    vertical-align: middle;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    border: 1px solid rgba(189, 195, 199, 0.5);
+}
+
+.review-item .user {
+    display: inline-block;
+    vertical-align: middle;
+    color: #1D1D1D;
+    font-size: 15px;
+    margin-left: 7px;
+}
+
+.review-item .date-posted {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 10px 0 10px 7px;
+    color: #858585;
+    font-weight: 400;
+}
+
+.review-item .content {
+    color: #858585;
+    font-size: 13px;
+    line-height: 2;
+}
+
+/* .newsletter {
     width: 100%;
     position: fixed;
     background-color: white;
@@ -146,4 +371,4 @@
 .newsletter .close-btn:hover {
     color: #1D1D1D;
     cursor: pointer;
-}
+} */
