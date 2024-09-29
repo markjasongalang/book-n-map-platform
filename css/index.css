@@ -360,6 +360,7 @@
     color: #E74C3C;
 }
 
+.manage-place form #location-address,
 .manage-place form #place-about {
     width: 100%;
     padding: 10px;
@@ -371,6 +372,10 @@
     border: 1px solid rgba(189, 195, 199, 0.5);
     resize: none;
     overflow: hidden;
+}
+
+.manage-place form #location-address {
+    min-height: 20px;
 }
 
 .manage-place form #add-file-btn {

@@ -130,8 +130,7 @@
             <p class="note">Note: You can click anywhere <span class="highlight">on the map</span> then select an address on the box that will appear - or more simply you can just <span class="highlight">click the button below</span> if you are at the location right now:</p>
             <i class="ri-map-pin-line"></i><button type="button" class="current-loc-btn">Use my current location</button>
 
-            <!-- TODO: Reverse Geocoding -->
-            <input id="location-address" name="location_address" type="text" placeholder="No location selected" disabled>
+            <textarea class="dynamic-textarea" id="location-address" name="location_address" placeholder="No location selected" disabled></textarea>
 
             <label for="place-name">Name<span class="special-asterisk">*</span></label>
             <input name="place_name" type="text" placeholder="Enter name of place">
@@ -211,21 +210,21 @@
     });
 
     // Mapbox
-    // mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
     
-    // const map = new mapboxgl.Map({
-    //     container: 'map',
-    //     style: 'mapbox://styles/mapbox/streets-v11',
-    //     center: [121.0450, 14.5995], // Center to Metro Manila
-    //     zoom: 11, // Set zoom level
-    //     minZoom: 11, // Minimum zoom level (adjust as needed)
-    //     maxZoom: 18 // Maximum zoom level (adjust as needed)
-    // });
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [121.0450, 14.5995], // Center to Metro Manila
+        zoom: 11, // Set zoom level
+        minZoom: 11, // Minimum zoom level (adjust as needed)
+        maxZoom: 18 // Maximum zoom level (adjust as needed)
+    });
 
-    // // Destination coordinates
-    // const destination = [120.979194, 14.581552];
+    // Destination coordinates
+    const destination = [120.979194, 14.581552];
 
-    // // Add a marker for the destination
+    // Add a marker for the destination
     // new mapboxgl.Marker({ color: '#E74C3C' })
     //     .setLngLat(destination)
     //     .setPopup(new mapboxgl.Popup({
@@ -258,6 +257,115 @@
     //     .setText('7.9'))
     //     .addTo(map)
     //     .togglePopup();
+
+    let clickMarkers = [];
+    let currentLocMarkers = [];
+
+    savePlaceUsingMapClick();
+
+    function savePlaceUsingMapClick() {
+        
+        // Add click event to the map
+        map.on('click', (e) => {
+
+            // Clear current location markers
+            currentLocMarkers.forEach(marker => marker.remove());
+            currentLocMarkers = []; // Reset the markers array
+
+            const lngLat = e.lngLat; // Get the clicked coordinates
+
+            // Clear existing markers
+            clickMarkers.forEach(marker => marker.remove());
+            clickMarkers = []; // Reset the markers array
+
+            // Add a new marker at the clicked location
+            const newMarker = new mapboxgl.Marker({ color: '#E74C3C' })
+                .setLngLat([lngLat.lng, lngLat.lat])
+                .addTo(map);
+            
+            // Store the new marker in the array
+            clickMarkers.push(newMarker);
+
+            // Call the OpenStreetMap Nominatim reverse geocoding API
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lngLat.lat}&lon=${lngLat.lng}&format=json`)
+                .then(response => response.json())
+                .then(data => {
+                    // console.log(`${data.address.city}, ${data.address.region}`);
+                    // console.log(data);
+
+                    // Extract the address from the response
+                    // const placeName = `${data.address.city}, ${data.address.region}` || "No address found";
+                    const placeName = data.display_name || "No address found";
+                    
+                    // Display the address in the disabled input field
+                    const locationAddress = document.querySelector('#location-address');
+                        locationAddress.value = placeName;
+                        autoResizeTextarea(locationAddress);
+
+                    // new mapboxgl.Marker({ color: '#E74C3C' })
+                    //     .setLngLat([lngLat.lng, lngLat.lat])
+                    //     .addTo(map)
+                    //     .togglePopup();
+                })
+                .catch(error => {
+                    console.error('Error with reverse geocoding:', error);
+                    document.getElementById('location-address').value = "Error finding the address";
+                });
+        });
+    }
+
+    document.querySelector('.current-loc-btn').addEventListener('click', savePlaceUsingCurrentLoc);
+    function savePlaceUsingCurrentLoc() {
+        // Clear clicked markers
+        clickMarkers.forEach(marker => marker.remove());
+        clickMarkers = []; // Reset the markers array
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const userLocation = [position.coords.longitude, position.coords.latitude];
+                // console.log("Current Location:", userLocation);
+
+                // Clear existing markers
+                currentLocMarkers.forEach(marker => marker.remove());
+                currentLocMarkers = []; // Reset the markers array
+
+                // Optionally, add a marker for the user's location
+                const newMarker = new mapboxgl.Marker({ color: '#E74C3C' })
+                    .setLngLat(userLocation)
+                    .addTo(map);
+                
+                // Store the new marker in the array
+                currentLocMarkers.push(newMarker);
+                
+                // Center to the user's location
+                map.setCenter(userLocation);
+                
+                // Optionally, call the reverse geocoding API to get the address
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLocation[1]}&lon=${userLocation[0]}&format=json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const placeName = data.display_name || "No address found";
+                        const locationAddress = document.querySelector('#location-address');
+                        locationAddress.value = placeName;
+                        autoResizeTextarea(locationAddress);
+                    })
+                    .catch(error => {
+                        console.error('Error with reverse geocoding:', error);
+                        document.querySelector('#location-address').value = "Error finding the address";
+                    });
+
+            }, (error) => {
+                console.error("Error getting location:", error);
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function autoResizeTextarea(textarea) {
+        textarea.style.height = 'auto'; // Reset the height
+        textarea.style.height = textarea.scrollHeight + 'px'; // Set to the new height
+    }
 
     // // Function to fetch directions and display the route
     // function displayDirections() {
