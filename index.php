@@ -123,12 +123,15 @@
     <!-- Manage Place -->
     <div class="manage-place">
         <button class="back-btn"><i class="ri-arrow-left-line"></i> Back</button>
-        <h2>Manage Place</h2>
+        <h2>Save Place</h2>
 
         <form action="#" method="post">
-            <label>Location<span class="special-asterisk">*</span></label>
-            <p class="note">Note: You can click anywhere <span class="highlight">on the map</span> or you can just <span class="highlight">click the button below</span> to use your current location:</p>
-            <i class="ri-map-pin-line"></i><button type="button" class="current-loc-btn">Use Current Location</button>
+            <label for="location-address">Location<span class="special-asterisk">*</span></label>
+            <p class="note">Note: You can click anywhere <span class="highlight">on the map</span> then select an address on the box that will appear - or more simply you can just <span class="highlight">click the button below</span> if you are at the location right now:</p>
+            <i class="ri-map-pin-line"></i><button type="button" class="current-loc-btn">Use my current location</button>
+
+            <!-- TODO: Reverse Geocoding -->
+            <input id="location-address" name="location_address" type="text" placeholder="No location selected" disabled>
 
             <label for="place-name">Name<span class="special-asterisk">*</span></label>
             <input name="place_name" type="text" placeholder="Enter name of place">
