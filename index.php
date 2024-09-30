@@ -1,8 +1,13 @@
 <?php
+    session_start();
+
     $title = "A community-driven platform for quiet spaces";
     $css_file_name = "index";
+
     include './partials/header.php';
     include 'connection.php';
+
+    echo $_SESSION['username'];
 ?>
 
 <div class="container">

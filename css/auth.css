@@ -150,6 +150,10 @@ body {
     text-decoration: underline;
 }
 
+.container form .status {
+    margin-top: 10px;
+}
+
 .container form .resend-code {
     width: auto;
     float: right;
@@ -185,4 +189,19 @@ body {
 
 .container .update-email-form.hide {
     display: none;
+}
+
+.container .status {
+    color: #E74C3C;
+    font-size: 13px;
+    text-align: center;
+    font-weight: 600;
+    margin: 20px 0;
+}
+
+.container form .status {
+    color: #E74C3C;
+    text-align: left;
+    font-weight: 400;
+    margin: 10px 0 0 0;
 }

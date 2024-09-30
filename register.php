@@ -1,6 +1,11 @@
 <?php
     session_start();
 
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    include 'connection.php';
+
     $title = "Register";
     include './partials/auth-header.php';
 
@@ -32,6 +37,12 @@
             $email = test_input($_POST['email']);
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $email_err = "Invalid email format";
+            } else {
+                $sql = "SELECT email FROM users WHERE email = '$email'";
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                    $email_err = "Email already taken";
+                }
             }
         }
 
@@ -41,9 +52,13 @@
             $username = test_input($_POST['username']);
             if (strlen($username) < 5) {
                 $username_err = "Must be at least 5 characters";
+            } else {
+                $sql = "SELECT username FROM users WHERE username = '$username'";
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                    $username_err = "Username already taken";
+                }
             }
-
-            // TODO: Check if username exists in the database
         }
 
         if (empty($_POST['password'])) {
@@ -76,8 +91,49 @@
             $_SESSION['register_form_data'] = $_POST;
             $_SESSION['register_form_data']['password'] = password_hash($password, PASSWORD_BCRYPT);
             $_SESSION['register_form_data']['confirm_password'] = password_hash($confirm_pass, PASSWORD_BCRYPT);
-            header('Location: confirm-email');
-            exit();
+
+            $verification_code = rand(100000, 999999);
+            $expires_at = date("Y-m-d H:i:s", strtotime("+10 minutes"));
+            $sql = "INSERT INTO verification_codes(email, code, expires_at) 
+                    VALUES('$email', '$verification_code', '$expires_at')";
+
+            if ($conn->query($sql) === TRUE) {
+                
+                require 'vendor/autoload.php'; // Use Composer autoloader
+
+                $mail = new PHPMailer(true);
+
+                try {
+                    // Server settings
+                    $mail->isSMTP();                                            
+                    $mail->Host       = 'smtp.gmail.com';                    
+                    $mail->SMTPAuth   = true;                                   
+                    $mail->Username   = 'markjasongalang.work@gmail.com';                
+                    $mail->Password   = 'hehh yaxi bpnv fwqy';
+                    $mail->SMTPSecure = 'tls';            
+                    $mail->Port       = 587;
+
+                    // Recipients
+                    $mail->setFrom('your-email@gmail.com', 'Mailer');
+                    $mail->addAddress($email); 
+
+                    // Content
+                    $mail->isHTML(true);                                 
+                    $mail->Subject = 'Book n\' Map: Here is your verification code';
+                    $mail->Body    = "This is your code: <b>$verification_code</b>";
+                    $mail->AltBody = "This is your code: $verification_code";
+
+                    $mail->send();
+
+                    // Proceed to confirmation of email
+                    header('Location: confirm-email');
+                    exit();
+                } catch (Exception $e) {
+                    $agree_cb_err = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                }
+            } else {
+                $agree_cb_err = "Error: " . $sql . "<br>" . $conn->error;
+            }
         }
     }
 
