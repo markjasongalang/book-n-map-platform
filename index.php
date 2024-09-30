@@ -2,6 +2,7 @@
     $title = "A community-driven platform for quiet spaces";
     $css_file_name = "index";
     include './partials/header.php';
+    include 'connection.php';
 ?>
 
 <div class="container">
@@ -181,12 +182,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 
 <script>
-    // Generate dummy places (remove this)
-    const placeGrid = document.querySelector('.place-grid');
-    for (let i = 0; i < 9; i++) {
-        const placeItemClone = document.querySelector('.place-item').cloneNode(true);
-        placeGrid.appendChild(placeItemClone);
-    }
+    
     document.querySelectorAll('.place-item').forEach((placeItem) => {
         placeItem.addEventListener('click', () => {
             document.querySelector('.place-list').style.display = 'none';
@@ -210,16 +206,16 @@
     });
 
     // Mapbox
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
+    // mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
     
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [121.0450, 14.5995], // Center to Metro Manila
-        zoom: 11, // Set zoom level
-        minZoom: 11, // Minimum zoom level (adjust as needed)
-        maxZoom: 18 // Maximum zoom level (adjust as needed)
-    });
+    // const map = new mapboxgl.Map({
+    //     container: 'map',
+    //     style: 'mapbox://styles/mapbox/streets-v11',
+    //     center: [121.0450, 14.5995], // Center to Metro Manila
+    //     zoom: 11, // Set zoom level
+    //     minZoom: 11, // Minimum zoom level (adjust as needed)
+    //     maxZoom: 18 // Maximum zoom level (adjust as needed)
+    // });
 
     // Destination coordinates
     const destination = [120.979194, 14.581552];
@@ -261,10 +257,9 @@
     let clickMarkers = [];
     let currentLocMarkers = [];
 
-    savePlaceUsingMapClick();
+    // savePlaceUsingMapClick();
 
     function savePlaceUsingMapClick() {
-        
         // Add click event to the map
         map.on('click', (e) => {
 
@@ -301,11 +296,6 @@
                     const locationAddress = document.querySelector('#location-address');
                         locationAddress.value = placeName;
                         autoResizeTextarea(locationAddress);
-
-                    // new mapboxgl.Marker({ color: '#E74C3C' })
-                    //     .setLngLat([lngLat.lng, lngLat.lat])
-                    //     .addTo(map)
-                    //     .togglePopup();
                 })
                 .catch(error => {
                     console.error('Error with reverse geocoding:', error);

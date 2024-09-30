@@ -1,6 +1,11 @@
 <?php
+    session_start();
+
     $title = "Confirm Email";
     include './partials/auth-header.php';
+
+    $register_form_data = $_SESSION['register_form_data'];
+    
 ?>
 
 <div class="container">

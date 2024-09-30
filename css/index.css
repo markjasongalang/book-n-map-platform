@@ -25,11 +25,8 @@
 
 /* ========================================= Place List ========================================= */
 .place-list {
-    /* remove this */
-    display: none;
-
     height: inherit;
-    padding: 0 20px;
+    padding: 0 20px 15px 20px;
     overflow-y: auto;
 }
 
@@ -56,7 +53,7 @@
 
 .place-list .place-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px 15px;
 }
 
@@ -142,6 +139,7 @@
     margin-top: 7px;
     /* Position the image container (needed to position the left and right arrows) */
     position: relative;
+    user-select: none;
 }
 
 .place-detail .image-slideshow .slides {
@@ -307,9 +305,7 @@
 
 /* ========================================= Manage Place ========================================= */
 .manage-place {
-    /* Uncomment this */
-    /* display: none; */
-
+    display: none;
     height: inherit;
     padding: 15px 20px;
     overflow-y: auto;
