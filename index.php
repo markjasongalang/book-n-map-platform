@@ -6,7 +6,6 @@
 
     include 'connection.php';
     include './partials/header.php';
-
 ?>
 
 <div class="container">
@@ -16,9 +15,9 @@
     <!-- Place List -->
     <div class="place-list">
 
-        <?php if (isset($_SESSION['username'])) { ?>
-            <p class="new-library">Didn't find the library? <span class="add-library">Click here to add it!</span></p>
-        <?php } ?>
+        <p class="new-library">Didn't find the library? <span class="add-library">Click here to add it!</span></p>
+        <!-- <?php if (isset($_SESSION['username'])) { ?>
+        <?php } ?> -->
 
         <form action="#" method="get" class="search-form">
             <i class="ri-search-line"></i>
@@ -164,7 +163,6 @@
             <label class="amenities-label">Amenities<span class="special-asterisk">*</span></label>
             <p class="amenities-error status"></p>
             <p class="note">Note: You can drag the amenities to change their order.</p>
-            <!-- <p class="status"><?php echo $amenities_err; ?></p> -->
             <div id="amenities-list">
                 <!-- Dynamic inputs will be added here -->
             </div>
