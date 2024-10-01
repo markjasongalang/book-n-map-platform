@@ -101,12 +101,12 @@ nav .menu .register:hover {
 }
 
 nav .menu .notifs-icon i {
-    color: rgba(189, 195, 199, 0.5);
+    color: #858585;
     font-size: 22px;
 }
 
 nav .menu .notifs-icon i:hover {
-    color: #858585;
+    color: #1D1D1D;
     cursor: pointer;
 }
 
@@ -132,7 +132,7 @@ nav .menu .profile-dropdown {
     z-index: 1;
 }
 
-nav .menu .profile-dropdown.show {
+nav .menu ul .profile-dropdown.show {
     display: block;
 }
 
