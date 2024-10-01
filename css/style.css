@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
 
+/* ===================== OVERALL ===================== */
 * {
     margin: 0;
     padding: 0;
@@ -11,6 +12,11 @@ body {
     overflow-x: hidden;
 }
 
+button,
+input[type=submit] {
+    user-select: none;
+}
+
 ::selection {
     color: white;
     background-color: #E74C3C;
@@ -18,52 +24,6 @@ body {
 
 .special-asterisk {
     color: #E74C3C;
-}
-
-button,
-input[type=submit] {
-    user-select: none;
-}
-
-nav {
-    padding: 0px 25px 0px 15px;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(189, 195, 199, 0.5);
-}
-
-nav .logo {
-    height: 46px;
-    margin-top: 8px;
-}
-
-nav .menu ul {
-    list-style-type: none;
-}
-
-nav .menu li {
-    display: inline-block;
-    margin: 20px 0;
-    font-size: 13px;
-}
-
-nav .menu li a {
-    color: #E74C3C;
-    padding: 5px 20px;
-}
-
-nav .menu li a:hover {
-    cursor: pointer;
-    color: #EF7E6B;
-}
-
-nav .menu .register {
-    text-decoration: none;
-    border: 1px solid #E74C3C;
-}
-
-nav .menu .register:hover {
-    border: 1px solid #EF7E6B;
 }
 
 .bullet {
@@ -87,4 +47,99 @@ nav .menu .register:hover {
 
 .back-btn:hover {
     cursor: pointer;
+}
+
+/* ===================== NAVIGATION BAR ===================== */
+nav {
+    padding: 0px 25px 0px 15px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(189, 195, 199, 0.5);
+}
+
+nav .logo {
+    height: 46px;
+    margin-top: 8px;
+}
+
+nav .menu ul {
+    list-style-type: none;
+}
+
+nav .menu li {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+nav .menu .sign-in,
+nav .menu .register {
+    padding: 5px 0;
+}
+
+nav .menu li a {
+    color: #E74C3C;
+    padding: 5px 20px;
+}
+
+nav .menu li a:hover {
+    cursor: pointer;
+    color: #EF7E6B;
+}
+
+nav .menu .register {
+    border: 1px solid #E74C3C;
+}
+
+nav .menu .register a {
+    text-decoration: none;
+}
+
+nav .menu .register:hover {
+    border: 1px solid #EF7E6B;
+}
+
+nav .menu .notifs-icon i {
+    color: rgba(189, 195, 199, 0.5);
+    font-size: 22px;
+}
+
+nav .menu .notifs-icon i:hover {
+    color: #858585;
+    cursor: pointer;
+}
+
+nav .menu .profile-image {
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(189, 195, 199, 0.5);
+    border-radius: 100%;
+    margin: 0 10px 0 20px;
+}
+
+nav .menu .profile-image:hover {
+    border-color: #858585;
+    cursor: pointer;
+}
+
+nav .menu .profile-dropdown {
+    display: none;
+    background-color: white;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 20px;
+    position: absolute;
+    z-index: 1;
+}
+
+nav .menu .profile-dropdown.show {
+    display: block;
+}
+
+nav .menu .profile-dropdown .logout-btn {
+    background: none;
+    border: none;
+    font-family: 'Merriweather', serif;
+    cursor: pointer;
+    color: #858585;
 }

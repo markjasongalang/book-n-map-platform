@@ -1,4 +1,10 @@
 <?php
+    session_start();
+    if (isset($_SESSION['username'])) {
+        header('Location: /booknmap/');
+        exit;
+    }
+
     $title = "Sign In";
     include './partials/auth-header.php';
 ?>

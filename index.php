@@ -4,10 +4,9 @@
     $title = "A community-driven platform for quiet spaces";
     $css_file_name = "index";
 
-    include './partials/header.php';
     include 'connection.php';
-
-    echo $_SESSION['username'];
+    include './partials/header.php';
+    
 ?>
 
 <div class="container">
@@ -93,7 +92,7 @@
             <p class="amenity"><i class="ri-checkbox-circle-fill"></i>Book Clubs Every Wednesday</p>
         </div>
 
-        <div class="reviews">
+        <!-- <div class="reviews">
             <h2>Reviews - 32</h2>
 
             <form action="#" method="post" class="review-form">
@@ -123,7 +122,7 @@
                 <p class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci error possimus magni expedita commodi necessitatibus quas, at sapiente? Ipsum nostrum quam fugit numquam earum ullam consequuntur molestiae voluptates voluptas est?
                 Consectetur neque error in doloribus amet. Deleniti inventore eaque tenetur voluptates, repellat omnis suscipit impedit incidunt ad atque quos obcaecati accusamus, velit facilis. Rem officiis, debitis quasi ipsum reiciendis ullam?</p>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <!-- Manage Place -->
