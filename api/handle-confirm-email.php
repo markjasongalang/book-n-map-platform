@@ -4,10 +4,12 @@
     header('Content-Type: application/json');
     $response = [];
 
-    $register_form_data = $_SESSION['register_form_data'];
-    $email = $register_form_data['email'];
-
-    $response['email'] = $email;
+    if (isset($_SESSION['register_form_data'])) {
+        $register_form_data = $_SESSION['register_form_data'];
+        $email = $register_form_data['email'];
+    
+        $response['email'] = $email;
+    }
 
     if (isset($_SESSION['username'])) {
         $response['redirect'] = true;

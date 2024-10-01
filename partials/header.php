@@ -1,17 +1,3 @@
-<?php
-    if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['logout'])) {
-        // Unset all session variables
-        $_SESSION = array();
-
-        // Destroy the session
-        session_destroy();
-
-        // Redirect to sign-in page
-        header("Location: /booknmap/sign-in");
-        exit;
-    }
-?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -46,19 +32,16 @@
             
             <div class="menu">
                 <ul>
-                    <?php if (!isset($_SESSION['username'])) { ?>
-                        <li class="sign-in"><a href="sign-in">Sign In</a></li>
-                        <li class="register"><a href="register">Register</a></li>
-                    <?php } else { ?>
-                        <!-- <li class="notifs-icon"><i class="ri-notification-line"></i></li> -->
-                        <li class="profile"><img class="profile-image" src="./images/profile-image.png" alt="Profile image"></li>
+                    <li class="sign-in"><a href="sign-in">Sign In</a></li>
+                    <li class="register"><a href="register">Register</a></li>
+                    <!-- <li class="notifs-icon"><i class="ri-notification-line"></i></li> -->
+                    <li class="profile"><img class="profile-image" src="./images/profile-image.png" alt="Profile image"></li>
 
-                        <div class="profile-dropdown">
-                            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-                                <input class="logout-btn" type="submit" name="logout" value="Logout">
-                            </form>
-                        </div>
-                    <?php } ?>
+                    <div class="profile-dropdown">
+                        <form method="POST" id="logout-form">
+                            <input class="logout-btn" type="submit" name="logout" value="Logout">
+                        </form>
+                    </div>
                 </ul>
             </div>
         </nav>

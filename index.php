@@ -6,6 +6,7 @@
 
     include 'connection.php';
     include './partials/header.php';
+    
 ?>
 
 <div class="container">
