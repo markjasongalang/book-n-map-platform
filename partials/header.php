@@ -50,7 +50,7 @@
                         <li class="sign-in"><a href="sign-in">Sign In</a></li>
                         <li class="register"><a href="register">Register</a></li>
                     <?php } else { ?>
-                        <li class="notifs-icon"><i class="ri-notification-line"></i></li>
+                        <!-- <li class="notifs-icon"><i class="ri-notification-line"></i></li> -->
                         <li class="profile"><img class="profile-image" src="./images/profile-image.png" alt="Profile image"></li>
 
                         <div class="profile-dropdown">

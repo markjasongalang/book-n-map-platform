@@ -8,6 +8,12 @@
     flex-basis: 50%;
 }
 
+.status {
+    color: #E74C3C;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
 /* ========================================= Map ========================================= */
 .container #map {
     height: inherit;
@@ -25,9 +31,24 @@
 
 /* ========================================= Place List ========================================= */
 .place-list {
+    /* remove this */
+    display: none;
     height: inherit;
     padding: 0 20px 15px 20px;
     overflow-y: auto;
+}
+
+.place-list .new-library {
+    margin: 15px 0;
+    font-size: 13px;
+    color: #93989B;
+    user-select: none;
+}
+
+.place-list .new-library .add-library {
+    text-decoration: underline;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 .place-list .search-form {
@@ -74,13 +95,13 @@
 }
 
 .place-item .content {
-    padding: 7px 12px 12px 12px;
+    padding: 7px 12px 5px 12px;
     text-wrap: wrap;
 }
 
 .place-item .content .place-name {
     color: #1D1D1D;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .place-item .content .ri-map-pin-line {
@@ -94,6 +115,7 @@
     vertical-align: middle;
     padding: 10px 0;
     font-weight: 400;
+    font-size: 15px;
 }
 
 .place-item .content .ratings i {
@@ -305,9 +327,10 @@
 
 /* ========================================= Manage Place ========================================= */
 .manage-place {
-    display: none;
+    /* Uncomment this */
+    /* display: none; */
     height: inherit;
-    padding: 15px 20px;
+    padding: 15px 20px 0 20px;
     overflow-y: auto;
 }
 
@@ -421,7 +444,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    cursor: move;
+    /* cursor: move; */
 }
 
 .manage-place form ul#image-preview li img {
@@ -493,6 +516,18 @@
     cursor: pointer;    
     color: #EF7E6B;
     border: 1px solid #EF7E6B;
+}
+
+.manage-place form input[type=submit] {
+    margin-top: 30px;
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.manage-place form input[type=submit]:hover {
+    background-color: #EF7E6B;
 }
 
 /* ========================================= Newsletter ========================================= */

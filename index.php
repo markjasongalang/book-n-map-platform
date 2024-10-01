@@ -6,7 +6,7 @@
 
     include 'connection.php';
     include './partials/header.php';
-    
+
 ?>
 
 <div class="container">
@@ -15,6 +15,11 @@
 
     <!-- Place List -->
     <div class="place-list">
+
+        <?php if (isset($_SESSION['username'])) { ?>
+            <p class="new-library">Didn't find the library? <span class="add-library">Click here to add it!</span></p>
+        <?php } ?>
+
         <form action="#" method="get" class="search-form">
             <i class="ri-search-line"></i>
             <input name="search-place" class="search-place" type="text" placeholder="Search for a library (＾▽＾)">
@@ -26,14 +31,14 @@
                 <div class="content">
                     <h3 class="place-name">National Library of the Philippines</h3>
                     <i class="ri-map-pin-line"></i>
-                    <h5 class="place-address">1000 Kalaw Ave, Ermita, Manila</h5>
-                    <div class="ratings">
+                    <h5 class="place-address">Ermita, Manila</h5>
+                    <!-- <div class="ratings">
                         <i class="ri-star-fill"></i>
                         <i class="ri-star-fill"></i>
                         <i class="ri-star-fill"></i>
                         <i class="ri-star-half-line"></i>
                         <i class="ri-star-line"></i>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -44,14 +49,14 @@
         <button class="back-btn"><i class="ri-arrow-left-line"></i> Back</button>
 
         <h1 class="name">National Library of the Philippines</h1>
-        <div class="ratings">
+        <!-- <div class="ratings">
             <i class="ri-star-fill"></i>
             <i class="ri-star-fill"></i>
             <i class="ri-star-fill"></i>
             <i class="ri-star-half-line"></i>
             <i class="ri-star-line"></i>
         </div>
-        <span class="bullet">&bull;</span>
+        <span class="bullet">&bull;</span> -->
         <span class="address">Ermita, Manila</span>
         <span class="bullet">&bull;</span>
         <span class="last-updated">Last Updated: Sep 25, 2024</span><br>
@@ -128,37 +133,44 @@
     <!-- Manage Place -->
     <div class="manage-place">
         <button class="back-btn"><i class="ri-arrow-left-line"></i> Back</button>
-        <h2>Save Place</h2>
+        <h2>Save Library</h2>
 
-        <form action="#" method="post">
+        <form id="manage-place-form" action="/booknmap/" method="POST" enctype="multipart/form-data">
             <label for="location-address">Location<span class="special-asterisk">*</span></label>
-            <p class="note">Note: You can click anywhere <span class="highlight">on the map</span> then select an address on the box that will appear - or more simply you can just <span class="highlight">click the button below</span> if you are at the location right now:</p>
+            <p class="note">Note: You can click <span class="highlight">anywhere on the map</span> - or more simply you can just <span class="highlight">click the button below</span> if you are at the location right now:</p>
             <i class="ri-map-pin-line"></i><button type="button" class="current-loc-btn">Use my current location</button>
 
             <textarea class="dynamic-textarea" id="location-address" name="location_address" placeholder="No location selected" disabled></textarea>
-
+            <input type="text" name="short_address" id="short-address" hidden>
+            <input type="text" name="latitude" id="latitude" hidden>
+            <input type="text" name="longitude" id="longitude" hidden>
+            <p class="location-error status"></p>
+            
             <label for="place-name">Name<span class="special-asterisk">*</span></label>
             <input name="place_name" type="text" placeholder="Enter name of place">
-
+            <p class="name-error status"></p>
+            
             <label for="place-about">About</label>
             <textarea class="dynamic-textarea" name="place_content" id="place-about" placeholder="What do you know about this place? (optional)"></textarea>
-
+            
             <label for="">Images<span class="special-asterisk">*</span></label>
-            <input type="file" id="file-upload" multiple accept="image/*" hidden>
+            <input type="file" name="place_images[]" id="file-upload" multiple accept="image/*" hidden>
+            <p class="place-images-error status"></p>
             <button type="button" id="add-file-btn"><i class="ri-add-circle-line"></i>Add Images</button>
-            <p class="note">Note: You can drag the selected images to change their order.</p>
             <ul id="image-preview" class="sortable">
                 <!-- Preview images will be added here -->
             </ul>
             
             <label class="amenities-label">Amenities<span class="special-asterisk">*</span></label>
+            <p class="amenities-error status"></p>
             <p class="note">Note: You can drag the amenities to change their order.</p>
-            <form id="amenities-form">
-                <div id="amenities-list">
-                    <!-- Dynamic inputs will be added here -->
-                </div>
-                <button type="button" class="add-amenity-btn" onclick="addAmenity()"><i class="ri-add-line"></i> Add Amenity</button>
-            </form>
+            <!-- <p class="status"><?php echo $amenities_err; ?></p> -->
+            <div id="amenities-list">
+                <!-- Dynamic inputs will be added here -->
+            </div>
+            <button type="button" class="add-amenity-btn" onclick="addAmenity()"><i class="ri-add-line"></i> Add Amenity</button>
+
+            <input type="submit" name="submit_place" value="Submit">
         </form>
     </div>
 </div>
@@ -186,7 +198,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 
 <script>
-    
     document.querySelectorAll('.place-item').forEach((placeItem) => {
         placeItem.addEventListener('click', () => {
             document.querySelector('.place-list').style.display = 'none';
@@ -194,12 +205,20 @@
         });
     });
 
+    const addLibrary = document.querySelector('.add-library');
+    addLibrary.addEventListener('click', () => {
+        document.querySelector('.manage-place').style.display = 'block';
+        document.querySelector('.place-list').style.display = 'none';
+    });
+
     // Go back to place list
-    const backBtn = document.querySelector('.back-btn');
-    backBtn.addEventListener('click', () => {
-        document.querySelector('.place-list').style.display = 'block';
-        document.querySelector('.place-detail').style.display = 'none';
-        document.querySelector('.manage-place').style.display = 'none';
+    const backBtns = document.querySelectorAll('.back-btn');
+    backBtns.forEach(backBtn => {
+        backBtn.addEventListener('click', () => {
+            document.querySelector('.place-list').style.display = 'block';
+            document.querySelector('.place-detail').style.display = 'none';
+            document.querySelector('.manage-place').style.display = 'none';
+        });
     });
 
     // Close newsletter
@@ -210,18 +229,17 @@
     });
 
     // Mapbox
-    // mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
     
-    // const map = new mapboxgl.Map({
-    //     container: 'map',
-    //     style: 'mapbox://styles/mapbox/streets-v11',
-    //     center: [121.0450, 14.5995], // Center to Metro Manila
-    //     zoom: 11, // Set zoom level
-    //     minZoom: 11, // Minimum zoom level (adjust as needed)
-    //     maxZoom: 18 // Maximum zoom level (adjust as needed)
-    // });
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [121.0450, 14.5995], // Center to Metro Manila
+        zoom: 11, // Set zoom level
+        minZoom: 11, // Minimum zoom level (adjust as needed)
+        maxZoom: 18 // Maximum zoom level (adjust as needed)
+    });
 
-    // Destination coordinates
     const destination = [120.979194, 14.581552];
 
     // Add a marker for the destination
@@ -236,32 +254,10 @@
     //     .addTo(map)
     //     .togglePopup();
 
-    // new mapboxgl.Marker({ color: '#E74C3C' })
-    //     .setLngLat([120.9822, 14.5904])
-    //     .setPopup(new mapboxgl.Popup({
-    //         offset: 25,
-    //         closeButton: false, // Remove close button
-    //         closeOnClick: false // Prevent closing when clicking outside
-    //     })
-    //     .setText('8.25'))
-    //     .addTo(map)
-    //     .togglePopup();
-
-    // new mapboxgl.Marker({ color: '#E74C3C' })
-    //     .setLngLat([121.0248, 14.5581])
-    //     .setPopup(new mapboxgl.Popup({
-    //         offset: 25,
-    //         closeButton: false, // Remove close button
-    //         closeOnClick: false // Prevent closing when clicking outside
-    //     })
-    //     .setText('7.9'))
-    //     .addTo(map)
-    //     .togglePopup();
-
     let clickMarkers = [];
     let currentLocMarkers = [];
 
-    // savePlaceUsingMapClick();
+    savePlaceUsingMapClick();
 
     function savePlaceUsingMapClick() {
         // Add click event to the map
@@ -293,13 +289,23 @@
                     // console.log(data);
 
                     // Extract the address from the response
-                    // const placeName = `${data.address.city}, ${data.address.region}` || "No address found";
                     const placeName = data.display_name || "No address found";
                     
-                    // Display the address in the disabled input field
+                    // Display full address in the disabled input field
                     const locationAddress = document.querySelector('#location-address');
-                        locationAddress.value = placeName;
-                        autoResizeTextarea(locationAddress);
+                    locationAddress.value = placeName;
+                    
+                    // Short address
+                    const shortAddress = `${data.address.city || data.address.town}, ${data.address.region}` || "No address found";
+                    document.querySelector('#short-address').value = shortAddress;
+
+                    // Coordinates
+                    const latitude = data.lat;
+                    const longitude = data.lon;
+                    document.querySelector('#latitude').value = latitude;
+                    document.querySelector('#longitude').value = longitude;
+
+                    autoResizeTextarea(locationAddress);
                 })
                 .catch(error => {
                     console.error('Error with reverse geocoding:', error);
@@ -338,10 +344,23 @@
                 fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLocation[1]}&lon=${userLocation[0]}&format=json`)
                     .then(response => response.json())
                     .then(data => {
+                        // console.log(data);
+
+                        // Full address
                         const placeName = data.display_name || "No address found";
                         const locationAddress = document.querySelector('#location-address');
                         locationAddress.value = placeName;
                         autoResizeTextarea(locationAddress);
+
+                        // Short address
+                        const shortAddress = `${data.address.city || data.address.town}, ${data.address.region}` || "No address found";
+                        document.querySelector('#short-address').value = shortAddress;
+
+                        // Coordinates
+                        const latitude = data.lat;
+                        const longitude = data.lon;
+                        document.querySelector('#latitude').value = latitude;
+                        document.querySelector('#longitude').value = longitude;
                     })
                     .catch(error => {
                         console.error('Error with reverse geocoding:', error);
@@ -468,29 +487,67 @@
     });
 
     // Review Rating Stars
-    const stars = document.querySelectorAll('.star');
-    const ratingDisplay = document.getElementById('rating-display');
-    stars.forEach(star => {
-        star.addEventListener('click', () => {
-            const ratingValue = star.getAttribute('data-value');
-            ratingDisplay.textContent = `Rating: ${ratingValue}`;
+    // const stars = document.querySelectorAll('.star');
+    // const ratingDisplay = document.getElementById('rating-display');
+    // stars.forEach(star => {
+    //     star.addEventListener('click', () => {
+    //         const ratingValue = star.getAttribute('data-value');
+    //         ratingDisplay.textContent = `Rating: ${ratingValue}`;
 
-            stars.forEach(s => s.classList.remove('selected'));
+    //         stars.forEach(s => s.classList.remove('selected'));
 
-            for (let i = 0; i < ratingValue; i++) {
-                stars[i].classList.add('selected');
-            }
-        });
+    //         for (let i = 0; i < ratingValue; i++) {
+    //             stars[i].classList.add('selected');
+    //         }
+    //     });
+    // });
+
+    // Manage place form
+    document.querySelector('#manage-place-form').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const locationAddress = document.querySelector('#location-address');
+        locationAddress.disabled = false;
+
+        const formData = new FormData(this); // Create FormData object from the form
+
+        // This will show all form data in the console
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(`${key} = ${value}`);
+        // }
+
+        fetch("./api/manage-place.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            locationAddress.disabled = true;
+            
+            document.querySelector('.location-error').textContent = data.location_err || "";
+            document.querySelector('.name-error').textContent = data.name_err || "";
+            document.querySelector('.place-images-error').textContent = data.images_err || "";
+            document.querySelector('.amenities-error').textContent = data.amenities_err || "";
+        })
+        .catch(error => console.error('Error:', error));
     });
 
-    // Sortable image uploads
+    // Preview image uploads
     const fileInput = document.getElementById("file-upload");
     const previewContainer = document.getElementById("image-preview");
     const addFileBtn = document.getElementById("add-file-btn");
 
+    let selectedFiles = []; // Array to hold the currently selected files
+
     // Function to preview selected images
     const previewImages = (files) => {
-        for (const file of files) {
+        // Clear the current previews
+        previewContainer.innerHTML = '';
+
+        // Update the selectedFiles array
+        selectedFiles = Array.from(files);
+
+        for (const file of selectedFiles) {
             const reader = new FileReader();
             const listItem = document.createElement("li");
 
@@ -501,7 +558,16 @@
 
                 const removeBtn = document.createElement("span");
                 removeBtn.innerHTML = '<i class="ri-close-line"></i>';
-                removeBtn.onclick = () => listItem.remove();
+                removeBtn.onclick = () => {
+                    // Remove the item from the preview
+                    listItem.remove();
+
+                    // Remove the file from the selectedFiles array
+                    selectedFiles = selectedFiles.filter(selectedFile => selectedFile !== file);
+                    
+                    // Update the file input
+                    updateFileInput();
+                };
                 listItem.appendChild(removeBtn);
 
                 previewContainer.appendChild(listItem);
@@ -511,6 +577,20 @@
         }
     };
 
+    // Function to update the file input based on selectedFiles
+    const updateFileInput = () => {
+        // Create a new DataTransfer object to hold the updated files
+        const dataTransfer = new DataTransfer();
+
+        // Add all remaining files in selectedFiles to the DataTransfer object
+        for (const file of selectedFiles) {
+            dataTransfer.items.add(file);
+        }
+
+        // Update the input element's files
+        fileInput.files = dataTransfer.files;
+    };
+
     // Handle file selection
     fileInput.addEventListener("change", function () {
         previewImages(fileInput.files);
@@ -518,15 +598,7 @@
 
     // Add more file input dynamically
     addFileBtn.addEventListener("click", () => {
-        fileInput.click(); // Trigger the input when button is clicked
-    });
-
-    // Initialize Sortable.js for the preview container
-    new Sortable(previewContainer, {
-        animation: 150,
-        onEnd: () => {
-            // console.log("Order changed!");
-        },
+        fileInput.click(); // Trigger the input when the button is clicked
     });
 
     // Make amenities sortable
