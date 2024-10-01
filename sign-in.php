@@ -7,7 +7,7 @@
     <img class="website-logo" src="./images/booknmap-logo.png" alt="Book n' Map logo">
     <h4>A community-driven platform for finding quiet spaces (°◡°♡)</h4>
 
-    <form id="sign-in-form" action="/booknmap/sign-in" method="post">
+    <form id="sign-in-form" method="post">
         <label for="username">Username</label>
         <input class="username" name="username" type="text" placeholder="Enter your username"><br>
         
@@ -23,14 +23,14 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Redirect to home page is already signed in
+        // Redirect to home page if already signed in
         fetch('./api/authenticate', {
             method: 'GET',
         })
         .then(response => response.json())
         .then(data => {
             if (data.redirect) {
-                windows.location.href = data.url;
+                window.location.href = data.url;
             }
         })
         .catch(error => console.error('Error:', error));

@@ -134,7 +134,7 @@
         <button class="back-btn"><i class="ri-arrow-left-line"></i> Back</button>
         <h2>Save Library</h2>
 
-        <form id="manage-place-form" action="/booknmap/" method="POST" enctype="multipart/form-data">
+        <form id="manage-place-form" method="POST" enctype="multipart/form-data">
             <label for="location-address">Location<span class="special-asterisk">*</span></label>
             <p class="note">Note: You can click <span class="highlight">anywhere on the map</span> - or more simply you can just <span class="highlight">click the button below</span> if you are at the location right now:</p>
             <i class="ri-map-pin-line"></i><button type="button" class="current-loc-btn">Use my current location</button>

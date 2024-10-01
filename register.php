@@ -1,208 +1,90 @@
 <?php
-    session_start();
-
-    if (isset($_SESSION['username'])) {
-        header('Location: /booknmap/');
-        exit;
-    }
-
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
-
-    include 'connection.php';
-
     $title = "Register";
     include './partials/auth-header.php';
-
-    $first_name_err = $last_name_err = $email_err = $username_err = $password_err = $confirm_pass_err = $agree_cb_err = "";
-    $first_name = $last_name = $email = $username = $password = $confirm_pass = $agree_cb = "";
-
-    if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['register'])) {
-        if (empty($_POST['first_name'])) {
-            $first_name_err = "First name is required";
-        } else {
-            $first_name = test_input($_POST['first_name']);
-            if (!preg_match("/^[a-zA-Z-' ]*$/", $first_name)) {
-                $first_name_err = "Only letters and white space allowed";
-            }
-        }
-
-        if (empty($_POST['last_name'])) {
-            $last_name_err = "Last name is required";
-        } else {
-            $last_name = test_input($_POST['last_name']);
-            if (!preg_match("/^[a-zA-Z-' ]*$/", $last_name)) {
-                $last_name_err = "Only letters and white space allowed";
-            }
-        }
-
-        if (empty($_POST['email'])) {
-            $email_err = "Email is required";
-        } else {
-            $email = test_input($_POST['email']);
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $email_err = "Invalid email format";
-            } else {
-                $sql = "SELECT email FROM users WHERE email = '$email'";
-                $result = $conn->query($sql);
-                if ($result->num_rows > 0) {
-                    $email_err = "Email already taken";
-                }
-            }
-        }
-
-        if (empty($_POST['username'])) {
-            $username_err = "Username is required";
-        } else {
-            $username = test_input($_POST['username']);
-            if (strlen($username) < 5) {
-                $username_err = "Must be at least 5 characters";
-            } else {
-                $sql = "SELECT username FROM users WHERE username = '$username'";
-                $result = $conn->query($sql);
-                if ($result->num_rows > 0) {
-                    $username_err = "Username already taken";
-                }
-            }
-        }
-
-        if (empty($_POST['password'])) {
-            $password_err = "Password is required";
-        } else {
-            $password = test_input($_POST['password']);
-            if (strlen($password) < 5) {
-                $password_err = "Must be at least 5 characters";
-            }
-        }
-
-        if (empty($_POST['confirm_password'])) {
-            $confirm_pass_err = "Confirm Password is required";
-        } else {
-            $confirm_pass = test_input($_POST['confirm_password']);
-            if ($confirm_pass !== $password) {
-                $confirm_pass_err = "Must match with password";
-            }
-        }
-
-        if (empty($_POST['agree_cb'])) {
-            $agree_cb_err = "Must agree to the terms of service and privacy policy";
-        } else {
-            $agree_cb = $_POST['agree_cb'];
-        }
-
-        if ($first_name_err == "" && $last_name_err == "" && $email_err == "" && $username_err == "" && 
-            $password_err == "" && $agree_cb_err == "") {
-
-            $_SESSION['register_form_data'] = $_POST;
-            $_SESSION['register_form_data']['password'] = password_hash($password, PASSWORD_BCRYPT);
-            $_SESSION['register_form_data']['confirm_password'] = password_hash($confirm_pass, PASSWORD_BCRYPT);
-
-            $verification_code = rand(100000, 999999);
-            $expires_at = date("Y-m-d H:i:s", strtotime("+10 minutes"));
-            $sql = "INSERT INTO verification_codes(email, code, expires_at) 
-                    VALUES('$email', '$verification_code', '$expires_at')";
-
-            if ($conn->query($sql) === TRUE) {
-                
-                require 'vendor/autoload.php'; // Use Composer autoloader
-
-                $mail = new PHPMailer(true);
-
-                try {
-                    // Server settings
-                    $mail->isSMTP();                                            
-                    $mail->Host       = 'smtp.gmail.com';                    
-                    $mail->SMTPAuth   = true;                                   
-                    $mail->Username   = 'markjasongalang.work@gmail.com';                
-                    $mail->Password   = 'hehh yaxi bpnv fwqy';
-                    $mail->SMTPSecure = 'tls';            
-                    $mail->Port       = 587;
-
-                    // Recipients
-                    $mail->setFrom('your-email@gmail.com', 'Mailer');
-                    $mail->addAddress($email); 
-
-                    // Content
-                    $mail->isHTML(true);                                 
-                    $mail->Subject = 'Book n\' Map: Here is your verification code';
-                    $mail->Body    = "This is your code: <b>$verification_code</b>";
-                    $mail->AltBody = "This is your code: $verification_code";
-
-                    $mail->send();
-
-                    // Proceed to confirmation of email
-                    header('Location: confirm-email');
-                    exit();
-                } catch (Exception $e) {
-                    $agree_cb_err = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-                }
-            } else {
-                $agree_cb_err = "Error: " . $sql . "<br>" . $conn->error;
-            }
-        }
-    }
-
-    function test_input($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-    }
 ?>
 
 <div class="container">
     <img class="website-logo" src="./images/booknmap-logo.png" alt="Book n' Map logo">
     <h4>Join our community (*^‿^*)</h4>
 
-    <form action="/booknmap/register" method="POST">
+    <form id="register-form" method="POST">
         <label for="first-name">First Name<span class="special-asterisk">*</span></label>
-        <input id="first-name" class="first-name" name="first_name" type="text" placeholder="Enter first name" value="<?php echo $first_name; ?>">
-        <?php if ($first_name_err !== "") { ?>
-            <p class="status"><?php echo $first_name_err; ?></p>
-        <?php } ?>
+        <input id="first-name" class="first-name" name="first_name" type="text" placeholder="Enter first name">
+        <p class="first-name-error status"></p>
         
         <label for="last-name">Last Name<span class="special-asterisk">*</span></label>
-        <input id="last-name" class="last-name" name="last_name" type="text" placeholder="Enter last name" value="<?php echo $last_name; ?>">
-        <?php if ($last_name_err !== "") { ?>
-            <p class="status"><?php echo $last_name_err; ?></p>
-        <?php } ?>
+        <input id="last-name" class="last-name" name="last_name" type="text" placeholder="Enter last name">
+        <p class="last-name-error status"></p>
         
         <label for="email">Email<span class="special-asterisk">*</span></label>
-        <input id="email" class="email" name="email" type="email" placeholder="Enter email" value="<?php echo $email; ?>">
-        <?php if ($email_err !== "") { ?>
-            <p class="status"><?php echo $email_err; ?></p>
-        <?php } ?>
+        <input id="email" class="email" name="email" type="email" placeholder="Enter email">
+        <p class="email-error status"></p>
         
         <label for="username">Username<span class="special-asterisk">*</span></label>
-        <input id="username" class="username" name="username" type="text" placeholder="Enter username" value="<?php echo $username; ?>">
-        <?php if ($username_err !== "") { ?>
-            <p class="status"><?php echo $username_err; ?></p>
-        <?php } ?>
+        <input id="username" class="username" name="username" type="text" placeholder="Enter username">
+        <p class="username-error status"></p>
         
         <label for="password">Password<span class="special-asterisk">*</span></label>
         <input id="password" class="password" name="password" type="password" placeholder="Enter password">
-        <?php if ($password_err !== "") { ?>
-            <p class="status"><?php echo $password_err; ?></p>
-        <?php } ?>
+        <p class="password-error status"></p>
         
         <label for="confirm-password">Confirm Password<span class="special-asterisk">*</span></label>
         <input id="confirm-password" class="confirm-password" name="confirm_password" type="password" placeholder="Enter confirm password">
-        <?php if ($confirm_pass_err !== "") { ?>
-            <p class="status"><?php echo $confirm_pass_err; ?></p>
-        <?php } ?>
+        <p class="confirm-password-error status"></p>
         
         <input id="agree-cb" class="agree-cb" name="agree_cb" value="accepted" type="checkbox">
-        <label class="agree-label" for="agree-cb">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></label><br>
-        <?php if ($agree_cb_err !== "") { ?>
-            <p class="status"><?php echo $agree_cb_err; ?></p>
-        <?php } ?>
         <!-- TODO: Redirect terms of service and privacy policy to an actual page -->
+        <label class="agree-label" for="agree-cb">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></label><br>
+        <p class="terms-privacy-error status"></p>
 
         <input class="submit" type="submit" name="register" value="Register">
     </form>
 
     <p class="auth-redirect-label">Already have an account? <a class="auth-redirect-link" href="sign-in">Sign In</a></p>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Redirect to home page if already signed in
+        fetch('./api/handle-register', {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect) {
+                window.location.href = data.url;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Register form
+    document.querySelector('#register-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+
+        fetch("./api/handle-register", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.url;
+            } else {
+                document.querySelector('.first-name-error').textContent = data.errors.first_name_err;
+                document.querySelector('.last-name-error').textContent = data.errors.last_name_err;
+                document.querySelector('.email-error').textContent = data.errors.email_err;
+                document.querySelector('.username-error').textContent = data.errors.username_err;
+                document.querySelector('.password-error').textContent = data.errors.password_err;
+                document.querySelector('.confirm-password-error').textContent = data.errors.confirm_pass_err;
+                document.querySelector('.terms-privacy-error').textContent = data.errors.agree_cb_err;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
 
 <?php
     include './partials/auth-footer.php';
