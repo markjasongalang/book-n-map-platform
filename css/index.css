@@ -31,6 +31,8 @@
 
 /* ========================================= Place List ========================================= */
 .place-list {
+    /* remove this */
+    display: none;
     height: inherit;
     padding: 0 20px 15px 20px;
     overflow-y: auto;
@@ -45,7 +47,8 @@
 
 .place-list .new-library .add-library {
     text-decoration: underline;
-    font-weight: 600;
+    /* font-weight: 600; */
+    color: #E74C3C;
     cursor: pointer;
 }
 
@@ -122,7 +125,8 @@
 
 /* ========================================= Place Detail ========================================= */
 .place-detail {
-    display: none;
+    /* uncomment this */
+    /* display: none; */
     height: inherit;
     padding: 15px 20px;
     overflow-y: auto;
@@ -135,84 +139,54 @@
     color: #1D1D1D;
 }
 
+.place-detail .last-updated,
 .place-detail .address {
-    display: inline-block;
-    margin: 10px 0;
+    color: #858585;
 }
 
-.place-detail .address,
 .place-detail .last-updated {
-    color: #858585;
+    margin: 5px 0;
     font-size: 13px;
 }
 
-.place-detail .last-updated {
-    display: inline-block;
+.place-detail .last-updated .contributor {
+    font-weight: 600;
+    color: #E74C3C;
+    /* cursor: pointer; */
 }
+
+.place-detail .address {
+    color: #1D1D1D;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.place-detail .address i {
+    font-size: 18px;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+
+.place-detail .address .full {
+    vertical-align: middle;
+}
+
 
 .place-detail .ratings {
     display: inline-block;
     color: #F0BB40;
 }
 
-.place-detail .image-slideshow {
-    margin-top: 7px;
-    /* Position the image container (needed to position the left and right arrows) */
-    position: relative;
-    user-select: none;
+.place-detail .place-images-preview {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
 }
 
-.place-detail .image-slideshow .slides {
-    display: none;
-}
-
-.place-detail .image-slideshow .slides img {
+.place-detail .place-images-preview img {
     width: 100%;
-    object-fit: contain;
-    height: 450px;
-    background-color: black;
-}
-
-.place-detail .image-slideshow button {
-    cursor: pointer;
-    font-size: 30px;
-    background: none;
-    border: none;
-    color: white;
-    outline: none;
-    padding: 16px;
-    position: absolute;
-    user-select: none;
-    top: 35%;
-}
-
-.place-detail .image-slideshow button:hover {
-    background-color: rgba(189, 195, 199, 0.5);
-}
-
-.place-detail .image-slideshow .next-btn {
-    right: 0;
-}
-
-.place-detail .image-slideshow .thumbnails {
-    opacity: 0.6;
-    cursor: pointer;
-}
-
-.place-detail .image-slideshow .active,
-.place-detail .image-slideshow .thumbnails:hover {
-    opacity: 1;
-}
-
-.place-detail .image-slideshow .row {
-    display: flex;
-    gap: 3px;
-}
-
-.place-detail .image-slideshow .row img {
+    height: 300px;
     object-fit: cover;
-    /* Based on the 'gap' property above */
-    width: calc((100% / 4) - (3 * 3px / 4)); 
 }
 
 .place-detail .amenities h2 {

@@ -55,33 +55,16 @@
             <i class="ri-star-line"></i>
         </div>
         <span class="bullet">&bull;</span> -->
-        <span class="address">Ermita, Manila</span>
-        <span class="bullet">&bull;</span>
-        <span class="last-updated">Last Updated: Sep 25, 2024</span><br>
 
-        <div class="image-slideshow">
-            <div class="slides">
-                <img src="./images/sample-library.jpeg" alt="Slide image">
-            </div>
-            <div class="slides">
-                <img src="./images/sample-library-2.jpg" alt="Slide image">
-            </div>
-            <div class="slides">
-                <img src="./images/sample-library-3.jpg" alt="Slide image">
-            </div>
-            <div class="slides">
-                <img src="./images/sample-library-4.jpg" alt="Slide image">
-            </div>
-            
-            <button class="prev-btn"><i class="ri-arrow-left-s-line"></i></button>
-            <button class="next-btn"><i class="ri-arrow-right-s-line"></i></button>
+        <p class="last-updated">Last updated: Sep 25, 2024 by <span class="contributor">markg</span></p>
+        <p class="address"><i class="ri-map-pin-line"></i><span class="full">Ermita, Manila</span></p>
 
-            <div class="row">
-                <img class="thumbnails" src="./images/sample-library.jpeg" alt="Slide image">
-                <img class="thumbnails" src="./images/sample-library-2.jpg" alt="Slide image">
-                <img class="thumbnails" src="./images/sample-library-3.jpg" alt="Slide image">
-                <img class="thumbnails" src="./images/sample-library-4.jpg" alt="Slide image">
-            </div>
+        <div class="place-images-preview">
+            <img src="./images/sample-library.jpeg" alt="">
+            <img src="./images/sample-library-2.jpg" alt="">
+            <img src="./images/sample-library-3.jpg" alt="">
+            <img src="./images/sample-library-4.jpg" alt="">
+            <img src="./images/sample-library-2.jpg" alt="">
         </div>
 
         <div class="amenities">
@@ -433,46 +416,46 @@
     // }
 
     // Image slideshow
-    let slideIndex = 1;
-    showSlides(slideIndex);
+    // let slideIndex = 1;
+    // showSlides(slideIndex);
     
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
+    // const prevBtn = document.querySelector('.prev-btn');
+    // const nextBtn = document.querySelector('.next-btn');
     
-    prevBtn.addEventListener('click', () => {
-        showSlides(slideIndex -= 1);
-    });
+    // prevBtn.addEventListener('click', () => {
+    //     showSlides(slideIndex -= 1);
+    // });
     
-    nextBtn.addEventListener('click', () => {
-        showSlides(slideIndex += 1);
-    });
+    // nextBtn.addEventListener('click', () => {
+    //     showSlides(slideIndex += 1);
+    // });
     
-    function showSlides(current) {
-        const slides = document.querySelectorAll('.slides');
-        const thumbnails = document.querySelectorAll('.thumbnails');
+    // function showSlides(current) {
+    //     const slides = document.querySelectorAll('.slides');
+    //     const thumbnails = document.querySelectorAll('.thumbnails');
 
-        // Reset slide index (when it reaches the end or the beginning)
-        current = ((current - 1 + slides.length) % slides.length) + 1;
+    //     // Reset slide index (when it reaches the end or the beginning)
+    //     current = ((current - 1 + slides.length) % slides.length) + 1;
 
-        for (let i = 0; i < slides.length; i++) {
-            slides[i].style.display = 'none';
-        }
-        for (let i = 0; i < thumbnails.length; i++) {
-            thumbnails[i].classList.remove('active');
-        }
+    //     for (let i = 0; i < slides.length; i++) {
+    //         slides[i].style.display = 'none';
+    //     }
+    //     for (let i = 0; i < thumbnails.length; i++) {
+    //         thumbnails[i].classList.remove('active');
+    //     }
 
-        slides[current - 1].style.display = 'block';
-        thumbnails[current - 1].classList.add('active');
+    //     slides[current - 1].style.display = 'block';
+    //     thumbnails[current - 1].classList.add('active');
 
-        slideIndex = current;
-    }
+    //     slideIndex = current;
+    // }
 
-    const thumbnails = document.querySelectorAll('.thumbnails');
-    for (let i = 0; i < thumbnails.length; i++) {
-        thumbnails[i].addEventListener('click', () => {
-            showSlides(i + 1);
-        });
-    }
+    // const thumbnails = document.querySelectorAll('.thumbnails');
+    // for (let i = 0; i < thumbnails.length; i++) {
+    //     thumbnails[i].addEventListener('click', () => {
+    //         showSlides(i + 1);
+    //     });
+    // }
 
     // Textareas with auto-resize
     const dynamicTextareas = document.querySelectorAll('.dynamic-textarea');
