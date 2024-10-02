@@ -25,4 +25,5 @@
     
     $response['signed_in'] = true;
     echo json_encode($response);
+    exit;
 ?>

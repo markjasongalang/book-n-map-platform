@@ -31,8 +31,6 @@
 
 /* ========================================= Place List ========================================= */
 .place-list {
-    /* remove this */
-    display: none;
     height: inherit;
     padding: 0 20px 15px 20px;
     overflow-y: auto;
@@ -327,8 +325,7 @@
 
 /* ========================================= Manage Place ========================================= */
 .manage-place {
-    /* Uncomment this */
-    /* display: none; */
+    display: none;
     height: inherit;
     padding: 15px 20px 0 20px;
     overflow-y: auto;

@@ -6,7 +6,7 @@
 
     include 'connection.php';
     include './partials/header.php';
-    
+
 ?>
 
 <div class="container">
@@ -17,10 +17,8 @@
     <div class="place-list">
 
         <p class="new-library">Didn't find the library? <span class="add-library">Click here to add it!</span></p>
-        <!-- <?php if (isset($_SESSION['username'])) { ?>
-        <?php } ?> -->
 
-        <form action="#" method="get" class="search-form">
+        <form method="GET" class="search-form" id="search-place-form">
             <i class="ri-search-line"></i>
             <input name="search-place" class="search-place" type="text" placeholder="Search for a library (＾▽＾)">
         </form>
@@ -132,7 +130,7 @@
 
     <!-- Manage Place -->
     <div class="manage-place">
-        <button class="back-btn"><i class="ri-arrow-left-line"></i> Back</button>
+        <button type="button" class="back-btn"><i class="ri-arrow-left-line"></i> Back</button>
         <h2>Save Library</h2>
 
         <form id="manage-place-form" method="POST" enctype="multipart/form-data">
@@ -147,13 +145,13 @@
             <p class="location-error status"></p>
             
             <label for="place-name">Name<span class="special-asterisk">*</span></label>
-            <input name="place_name" type="text" placeholder="Enter name of place">
+            <input id="place-name" name="place_name" type="text" placeholder="Enter name of place">
             <p class="name-error status"></p>
             
             <label for="place-about">About</label>
-            <textarea class="dynamic-textarea" name="place_content" id="place-about" placeholder="What do you know about this place? (optional)"></textarea>
+            <textarea class="dynamic-textarea" name="place_about" id="place-about" placeholder="What do you know about this place? (optional)"></textarea>
             
-            <label for="">Images<span class="special-asterisk">*</span></label>
+            <label for="file-upload">Images<span class="special-asterisk">*</span></label>
             <input type="file" name="place_images[]" id="file-upload" multiple accept="image/*" hidden>
             <p class="place-images-error status"></p>
             <button type="button" id="add-file-btn"><i class="ri-add-circle-line"></i>Add Images</button>
@@ -175,7 +173,7 @@
 </div>
 
 
-<div class="newsletter">
+<!-- <div class="newsletter">
     <div></div>
 
     <div class="content">
@@ -191,7 +189,7 @@
     </div>
 
     <i class="ri-close-line close-btn"></i>
-</div>
+</div> -->
 
 <!-- Sortable JS: Drag to change order of image file uploads -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
@@ -221,11 +219,11 @@
     });
 
     // Close newsletter
-    const newsletter = document.querySelector('.newsletter');
-    const closeBtn = newsletter.querySelector('.close-btn');
-    closeBtn.addEventListener('click', () => {
-        newsletter.style.display = 'none';
-    });
+    // const newsletter = document.querySelector('.newsletter');
+    // const closeBtn = newsletter.querySelector('.close-btn');
+    // closeBtn.addEventListener('click', () => {
+    //     newsletter.style.display = 'none';
+    // });
 
     // Mapbox
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
@@ -502,31 +500,45 @@
     // });
 
     // Manage place form
-    document.querySelector('#manage-place-form').addEventListener('submit', function(e) {
+    document.querySelector('#manage-place-form').addEventListener('submit', (e) => {
         e.preventDefault(); // Prevent the default form submission
 
         const locationAddress = document.querySelector('#location-address');
         locationAddress.disabled = false;
 
-        const formData = new FormData(this); // Create FormData object from the form
+        const formData = new FormData(e.target); // Create FormData object from the form
+        formData.append(e.submitter.name, true);
 
         // This will show all form data in the console
         // for (let [key, value] of formData.entries()) {
         //     console.log(`${key} = ${value}`);
         // }
 
-        fetch("./api/manage-place.php", {
+        fetch("./api/manage-place", {
             method: "POST",
             body: formData
         })
         .then(response => response.json())
         .then(data => {
             locationAddress.disabled = true;
-            
-            document.querySelector('.location-error').textContent = data.location_err || "";
-            document.querySelector('.name-error').textContent = data.name_err || "";
-            document.querySelector('.place-images-error').textContent = data.images_err || "";
-            document.querySelector('.amenities-error').textContent = data.amenities_err || "";
+            if (data.success) {
+                e.target.reset();
+                document.querySelector('#image-preview').innerHTML = '';
+                document.querySelector('#amenities-list').innerHTML = '';
+
+                document.querySelector('.location-error').textContent = "";
+                document.querySelector('.name-error').textContent = "";
+                document.querySelector('.place-images-error').textContent = "";
+                document.querySelector('.amenities-error').textContent = "";
+
+                document.querySelector('.manage-place').style.display = 'none';
+                document.querySelector('.place-list').style.display = 'block';
+            } else {
+                document.querySelector('.location-error').textContent = data.errors.location_err || "";
+                document.querySelector('.name-error').textContent = data.errors.name_err || "";
+                document.querySelector('.place-images-error').textContent = data.errors.images_err || "";
+                document.querySelector('.amenities-error').textContent = data.errors.amenities_err || "";
+            }
         })
         .catch(error => console.error('Error:', error));
     });
