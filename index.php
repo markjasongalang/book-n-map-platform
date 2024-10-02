@@ -18,26 +18,19 @@
             <p class="new-library">Didn't find the library? <span class="add-library">Click here to add it!</span></p>
         <?php } ?>
 
-        <form method="GET" class="search-form" id="search-place-form">
+        <form class="search-form" id="search-place-form">
             <i class="ri-search-line"></i>
-            <input name="search-place" class="search-place" type="text" placeholder="Search for a library (＾▽＾)">
+            <input name="search-place" class="search-place" id="search-place-input" type="text" placeholder="Search for a library (＾▽＾)">
         </form>
 
         <div class="place-grid">
-            <div class="place-item">
+            <!-- <div class="place-item">
                 <div class="content">
                     <h3 class="place-name">National Library of the Philippines</h3>
                     <i class="ri-map-pin-line"></i>
                     <h5 class="place-address">Ermita, Manila</h5>
-                    <!-- <div class="ratings">
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-half-line"></i>
-                        <i class="ri-star-line"></i>
-                    </div> -->
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -177,11 +170,107 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 
 <script>
-    document.querySelectorAll('.place-item').forEach((placeItem) => {
-        placeItem.addEventListener('click', () => {
-            document.querySelector('.place-list').style.display = 'none';
-            document.querySelector('.place-detail').style.display = 'block';
-        });
+    // Retrieve libraries
+    document.addEventListener('DOMContentLoaded', () => {
+        const placeGrid = document.querySelector('.place-grid');
+
+        fetch("./api/retrieve-place-list", {
+            method: "GET"
+        })
+        .then(response => response.json())
+        .then(data => {
+            // console.log(data);
+
+            // Initial list
+            if (data.success) {
+                data.places.forEach(library => {
+                    const placeItem = document.createElement('div');
+                    placeItem.classList.add('place-item');
+                    
+                    placeItem.innerHTML = `
+                        <div class="content">
+                            <h3 class="place-name">${library.name}</h3>
+                            <i class="ri-map-pin-line"></i>
+                            <h5 class="place-address">${library.short_address}</h5>
+                        </div>
+                    `;
+
+                    placeItem.style.backgroundImage = `url(${library.preview_image_file_path.slice(1)})`;
+
+                    placeItem.addEventListener('click', () => {
+                        document.querySelector('.place-list').style.display = 'none';
+                        document.querySelector('.place-detail').style.display = 'block';
+                    });
+                    
+                    placeGrid.appendChild(placeItem);
+
+                    // const marker = new mapboxgl.Marker({ color: '#E74C3C' })
+                    //     .setLngLat([library.longitude, library.latitude])
+                    //     .setPopup(new mapboxgl.Popup({
+                    //         offset: 25 ,
+                    //         closeButton: false, // Remove close button
+                    //         closeOnClick: false // Prevent closing when clicking outside
+                    //     })
+                    //     .setHTML('<i class="ri-book-marked-line"></i>'))
+                    //     .addTo(map)
+                    //     .togglePopup();
+                    
+                    // marker.getElement().addEventListener('click', () => {
+                    //     map.setCenter([library.longitude, library.latitude]);
+                    //     map.setZoom(14);
+                    //     document.querySelector('.place-list').style.display = 'none';
+                    //     document.querySelector('.place-detail').style.display = 'block';
+                    // });
+                });
+
+                // List with searching
+                const searchPlaceInput = document.querySelector('#search-place-input');
+                searchPlaceInput.addEventListener('input', () => {
+                    const searchTerm = searchPlaceInput.value.toLowerCase();
+                    const filteredLibraries = data.places.filter(library => 
+                        library.name.toLowerCase().includes(searchTerm) || 
+                        library.short_address.toLowerCase().includes(searchTerm)
+                    );
+
+                    // Clear existing items
+                    placeGrid.innerHTML = '';
+
+                    filteredLibraries.forEach(library => {
+                        const placeItem = document.createElement('div');
+                        placeItem.classList.add('place-item');
+                        
+                        placeItem.innerHTML = `
+                            <div class="content">
+                                <h3 class="place-name">${library.name}</h3>
+                                <i class="ri-map-pin-line"></i>
+                                <h5 class="place-address">${library.short_address}</h5>
+                            </div>
+                        `;
+
+                        placeItem.style.backgroundImage = `url(${library.preview_image_file_path.slice(1)})`;
+                        
+                        placeItem.addEventListener('click', () => {
+                            document.querySelector('.place-list').style.display = 'none';
+                            document.querySelector('.place-detail').style.display = 'block';
+                        });
+                        
+                        placeGrid.appendChild(placeItem);
+                    });
+                });
+            } else {
+                if (data.errors) {
+                    console.log(data.errors);
+                } else {
+                    console.log(data.message);
+                }
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Prevent search place from refreshing the page
+    document.querySelector('#search-place-form').addEventListener('submit', (e) => {
+        e.preventDefault();
     });
 
     const addLibrary = document.querySelector('.add-library');
@@ -210,35 +299,21 @@
     // });
 
     // Mapbox
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
+    // mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
     
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [121.0450, 14.5995], // Center to Metro Manila
-        zoom: 11, // Set zoom level
-        minZoom: 11, // Minimum zoom level (adjust as needed)
-        maxZoom: 18 // Maximum zoom level (adjust as needed)
-    });
-
-    const destination = [120.979194, 14.581552];
-
-    // Add a marker for the destination
-    // new mapboxgl.Marker({ color: '#E74C3C' })
-    //     .setLngLat(destination)
-    //     .setPopup(new mapboxgl.Popup({
-    //         offset: 25 ,
-    //         closeButton: false, // Remove close button
-    //         closeOnClick: false // Prevent closing when clicking outside
-    //     })
-    //     .setText('9.7'))
-    //     .addTo(map)
-    //     .togglePopup();
+    // const map = new mapboxgl.Map({
+    //     container: 'map',
+    //     style: 'mapbox://styles/mapbox/streets-v11',
+    //     center: [121.0450, 14.5995], // Center to Metro Manila
+    //     zoom: 11, // Set zoom level
+    //     minZoom: 11, // Minimum zoom level (adjust as needed)
+    //     maxZoom: 18 // Maximum zoom level (adjust as needed)
+    // });
 
     let clickMarkers = [];
     let currentLocMarkers = [];
 
-    savePlaceUsingMapClick();
+    // savePlaceUsingMapClick();
 
     function savePlaceUsingMapClick() {
         // Add click event to the map
@@ -416,48 +491,6 @@
     //     });
     // }
 
-    // Image slideshow
-    // let slideIndex = 1;
-    // showSlides(slideIndex);
-    
-    // const prevBtn = document.querySelector('.prev-btn');
-    // const nextBtn = document.querySelector('.next-btn');
-    
-    // prevBtn.addEventListener('click', () => {
-    //     showSlides(slideIndex -= 1);
-    // });
-    
-    // nextBtn.addEventListener('click', () => {
-    //     showSlides(slideIndex += 1);
-    // });
-    
-    // function showSlides(current) {
-    //     const slides = document.querySelectorAll('.slides');
-    //     const thumbnails = document.querySelectorAll('.thumbnails');
-
-    //     // Reset slide index (when it reaches the end or the beginning)
-    //     current = ((current - 1 + slides.length) % slides.length) + 1;
-
-    //     for (let i = 0; i < slides.length; i++) {
-    //         slides[i].style.display = 'none';
-    //     }
-    //     for (let i = 0; i < thumbnails.length; i++) {
-    //         thumbnails[i].classList.remove('active');
-    //     }
-
-    //     slides[current - 1].style.display = 'block';
-    //     thumbnails[current - 1].classList.add('active');
-
-    //     slideIndex = current;
-    // }
-
-    // const thumbnails = document.querySelectorAll('.thumbnails');
-    // for (let i = 0; i < thumbnails.length; i++) {
-    //     thumbnails[i].addEventListener('click', () => {
-    //         showSlides(i + 1);
-    //     });
-    // }
-
     // Textareas with auto-resize
     const dynamicTextareas = document.querySelectorAll('.dynamic-textarea');
     dynamicTextareas.forEach((dynamicTextarea) => {
@@ -466,22 +499,6 @@
             dynamicTextarea.style.height = dynamicTextarea.scrollHeight + 'px';
         });
     });
-
-    // Review Rating Stars
-    // const stars = document.querySelectorAll('.star');
-    // const ratingDisplay = document.getElementById('rating-display');
-    // stars.forEach(star => {
-    //     star.addEventListener('click', () => {
-    //         const ratingValue = star.getAttribute('data-value');
-    //         ratingDisplay.textContent = `Rating: ${ratingValue}`;
-
-    //         stars.forEach(s => s.classList.remove('selected'));
-
-    //         for (let i = 0; i < ratingValue; i++) {
-    //             stars[i].classList.add('selected');
-    //         }
-    //     });
-    // });
 
     // Manage place form
     document.querySelector('#manage-place-form').addEventListener('submit', (e) => {

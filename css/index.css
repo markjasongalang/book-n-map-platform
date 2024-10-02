@@ -22,11 +22,10 @@
 
 .container .mapboxgl-popup-content {
     font-family: 'Merriweather', serif;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 25px;
     color: white;
-    border-radius: 100%;
-    background-color: #F0BB40;
+    padding-top: 12px;
+    background-color: #EF7E6B;
 }
 
 /* ========================================= Place List ========================================= */
@@ -79,7 +78,7 @@
 .place-grid .place-item {
     position: relative;
     height: 350px;
-    background-image: url('../images/sample-library.jpeg');
+    /* background-image: url('../images/sample-library.jpeg'); */
     background-repeat: no-repeat;
     background-size: cover;
     border: 1px solid rgba(189, 195, 199, 0.5);
