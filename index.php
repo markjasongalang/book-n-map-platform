@@ -185,10 +185,12 @@
     });
 
     const addLibrary = document.querySelector('.add-library');
-    addLibrary.addEventListener('click', () => {
-        document.querySelector('.manage-place').style.display = 'block';
-        document.querySelector('.place-list').style.display = 'none';
-    });
+    if (addLibrary !== null) {
+        addLibrary.addEventListener('click', () => {
+            document.querySelector('.manage-place').style.display = 'block';
+            document.querySelector('.place-list').style.display = 'none';
+        });
+    }
 
     // Go back to place list
     const backBtns = document.querySelectorAll('.back-btn');
@@ -207,17 +209,17 @@
     //     newsletter.style.display = 'none';
     // });
 
-    // // Mapbox
-    // mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
+    // Mapbox
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
     
-    // const map = new mapboxgl.Map({
-    //     container: 'map',
-    //     style: 'mapbox://styles/mapbox/streets-v11',
-    //     center: [121.0450, 14.5995], // Center to Metro Manila
-    //     zoom: 11, // Set zoom level
-    //     minZoom: 11, // Minimum zoom level (adjust as needed)
-    //     maxZoom: 18 // Maximum zoom level (adjust as needed)
-    // });
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [121.0450, 14.5995], // Center to Metro Manila
+        zoom: 11, // Set zoom level
+        minZoom: 11, // Minimum zoom level (adjust as needed)
+        maxZoom: 18 // Maximum zoom level (adjust as needed)
+    });
 
     const destination = [120.979194, 14.581552];
 
