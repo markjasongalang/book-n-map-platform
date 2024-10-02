@@ -38,7 +38,7 @@
     <div class="place-detail">
         <button class="back-btn"><i class="ri-arrow-left-line"></i> Back</button>
 
-        <h1 class="name">National Library of the Philippines</h1>
+        <h1 class="name"></h1>
         <!-- <div class="ratings">
             <i class="ri-star-fill"></i>
             <i class="ri-star-fill"></i>
@@ -48,17 +48,20 @@
         </div>
         <span class="bullet">&bull;</span> -->
 
-        <p class="last-updated">Last updated: Sep 25, 2024 by <span class="contributor">markg</span></p>
-        <p class="address"><i class="ri-map-pin-line"></i><span class="full">Ermita, Manila</span></p>
-
+        <p class="last-updated"></p>
+        <p class="address"></p>
+        
         <div class="place-images-preview">
-            <img src="./images/sample-library.jpeg" alt="">
+            <!-- <img src="./images/sample-library.jpeg" alt="">
             <img src="./images/sample-library-2.jpg" alt="">
             <img src="./images/sample-library-3.jpg" alt="">
             <img src="./images/sample-library-4.jpg" alt="">
-            <img src="./images/sample-library-2.jpg" alt="">
+            <img src="./images/sample-library-2.jpg" alt=""> -->
         </div>
-
+        
+        <h2 class="about">About</h2>
+        <p class="about-content"></p>
+        
         <div class="amenities">
             <h2>Amenities °˖✧◝(⁰▿⁰)◜✧˖°</h2>
             <p class="amenity"><i class="ri-checkbox-circle-fill"></i>Free WiFi</p>
@@ -195,11 +198,52 @@
                         </div>
                     `;
 
-                    placeItem.style.backgroundImage = `url(${library.preview_image_file_path.slice(1)})`;
+                    placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
 
                     placeItem.addEventListener('click', () => {
+                        const placeDetail = document.querySelector('.place-detail');
+                        placeDetail.querySelector('.name').textContent = library.name;
+
+                        const date = new Date(library.date_added);
+                        // Format the date and time
+                        const options = {
+                            year: 'numeric',
+                            month: 'long', // e.g., "October"
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true // Change to false for 24-hour format
+                        };
+                        const formattedDate = date.toLocaleString('en-US', options);
+                        placeDetail.querySelector('.last-updated').innerHTML = `Last updated: ${formattedDate} by <span class="contributor">${library.username}</span>`;
+
+                        placeDetail.querySelector('.address').innerHTML = `<i class="ri-map-pin-line"></i><span class="full">${library.location_address}</span>`;
+
+                        const placeImagesPreview = document.querySelector('.place-images-preview');
+                        placeImagesPreview.innerHTML = '';
+                        library.place_images.forEach(placeImage => {
+                            const img = document.createElement('img');
+                            img.src = placeImage.file_path.slice(1);
+                            img.alt = "Place image";
+                            placeImagesPreview.appendChild(img);
+                        });
+
+                        if (library.about !== "") {
+                            placeDetail.querySelector('.about').style.display = 'block';
+                            placeDetail.querySelector('.about-content').style.display = 'block';
+                            placeDetail.querySelector('.about-content').innerHTML = `<i class="ri-arrow-right-double-line"></i>${library.about}`;
+                        } else {
+                            placeDetail.querySelector('.about').style.display = 'none';
+                            placeDetail.querySelector('.about-content').style.display = 'none';
+                            placeDetail.querySelector('.about-content').innerHTML = '';
+                        }
+
+                        
+
+                        // TODO: apply this also in searching
+
                         document.querySelector('.place-list').style.display = 'none';
-                        document.querySelector('.place-detail').style.display = 'block';
+                        placeDetail.style.display = 'block';
                     });
                     
                     placeGrid.appendChild(placeItem);
@@ -247,7 +291,7 @@
                             </div>
                         `;
 
-                        placeItem.style.backgroundImage = `url(${library.preview_image_file_path.slice(1)})`;
+                        placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
                         
                         placeItem.addEventListener('click', () => {
                             document.querySelector('.place-list').style.display = 'none';

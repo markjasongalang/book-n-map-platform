@@ -134,12 +134,8 @@
     color: #1D1D1D;
 }
 
-.place-detail .last-updated,
-.place-detail .address {
-    color: #858585;
-}
-
 .place-detail .last-updated {
+    color: #858585;
     margin: 5px 0;
     font-size: 13px;
 }
@@ -151,8 +147,11 @@
 }
 
 .place-detail .address {
-    color: #1D1D1D;
+    color: #858585;
     font-size: 14px;
+    border: 1px solid rgba(189, 195, 199, 0.5);
+    text-align: center;
+    padding: 10px 15px;
     margin: 10px 0;
 }
 
@@ -184,7 +183,17 @@
     object-fit: cover;
 }
 
-.place-detail .amenities h2 {
+.place-detail .about,
+.place-detail .about-content {
+    display: none;
+}
+
+.place-detail .about-content i {
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.place-detail h2 {
     font-weight: 500;
     font-size: 23px;
     margin: 15px 0 5px 0;

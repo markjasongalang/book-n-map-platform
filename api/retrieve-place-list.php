@@ -7,7 +7,7 @@
     $errors = [];
 
     try {
-        $sql = "SELECT id, short_address, latitude, longitude, name FROM libraries ORDER BY date_added DESC";
+        $sql = "SELECT id, location_address, short_address, latitude, longitude, name, about, amenities, username, date_added FROM libraries ORDER BY date_added DESC";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -15,11 +15,15 @@
             while ($row = $result->fetch_assoc()) {
                 $library_id = $row['id'];
 
-                $preview_image_sql = "SELECT file_path FROM library_images WHERE library_id = '$library_id' LIMIT 1";
+                $preview_image_sql = "SELECT file_path FROM library_images WHERE library_id = '$library_id'";
                 $preview_image_res = $conn->query($preview_image_sql);
 
-                $image_row = $preview_image_res->fetch_assoc();
-                $row['preview_image_file_path'] = $image_row['file_path'];
+                $place_images = [];
+                while ($image_row = $preview_image_res->fetch_assoc()) {
+                    $place_images[] = $image_row;
+                }
+                $row['preview_image_file_path'] = $place_images[0]['file_path'];
+                $row['place_images'] = $place_images;
                 
                 $places[] = $row;
             }
