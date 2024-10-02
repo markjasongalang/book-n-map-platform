@@ -231,7 +231,7 @@
                         if (library.about !== "") {
                             placeDetail.querySelector('.about').style.display = 'block';
                             placeDetail.querySelector('.about-content').style.display = 'block';
-                            placeDetail.querySelector('.about-content').innerHTML = `<i class="ri-arrow-right-double-line"></i>${library.about}`;
+                            placeDetail.querySelector('.about-content').innerHTML = library.about;
                         } else {
                             placeDetail.querySelector('.about').style.display = 'none';
                             placeDetail.querySelector('.about-content').style.display = 'none';

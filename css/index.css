@@ -188,8 +188,15 @@
     display: none;
 }
 
+.place-detail .about-content {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1D1D1D;
+    text-align: justify;
+}
+
 .place-detail .about-content i {
-    font-size: 20px;
+    font-size: 16px;
     margin-right: 5px;
 }
 
