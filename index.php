@@ -1,6 +1,4 @@
 <?php
-    session_start();
-
     $title = "A community-driven platform for quiet spaces";
     $css_file_name = "index";
 
@@ -16,7 +14,9 @@
     <!-- Place List -->
     <div class="place-list">
 
-        <p class="new-library">Didn't find the library? <span class="add-library">Click here to add it!</span></p>
+        <?php if (isset($_SESSION['username'])) { ?>
+            <p class="new-library">Didn't find the library? <span class="add-library">Click here to add it!</span></p>
+        <?php } ?>
 
         <form method="GET" class="search-form" id="search-place-form">
             <i class="ri-search-line"></i>
