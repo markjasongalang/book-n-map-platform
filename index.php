@@ -25,7 +25,6 @@
 
         <div class="place-grid">
             <div class="place-item">
-                <img src="./images/sample-library.jpeg" alt="Place image">
                 <div class="content">
                     <h3 class="place-name">National Library of the Philippines</h3>
                     <i class="ri-map-pin-line"></i>
@@ -208,17 +207,17 @@
     //     newsletter.style.display = 'none';
     // });
 
-    // Mapbox
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
+    // // Mapbox
+    // mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
     
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [121.0450, 14.5995], // Center to Metro Manila
-        zoom: 11, // Set zoom level
-        minZoom: 11, // Minimum zoom level (adjust as needed)
-        maxZoom: 18 // Maximum zoom level (adjust as needed)
-    });
+    // const map = new mapboxgl.Map({
+    //     container: 'map',
+    //     style: 'mapbox://styles/mapbox/streets-v11',
+    //     center: [121.0450, 14.5995], // Center to Metro Manila
+    //     zoom: 11, // Set zoom level
+    //     minZoom: 11, // Minimum zoom level (adjust as needed)
+    //     maxZoom: 18 // Maximum zoom level (adjust as needed)
+    // });
 
     const destination = [120.979194, 14.581552];
 

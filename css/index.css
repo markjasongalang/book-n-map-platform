@@ -31,8 +31,6 @@
 
 /* ========================================= Place List ========================================= */
 .place-list {
-    /* remove this */
-    display: none;
     height: inherit;
     padding: 0 20px 15px 20px;
     overflow-y: auto;
@@ -47,7 +45,6 @@
 
 .place-list .new-library .add-library {
     text-decoration: underline;
-    /* font-weight: 600; */
     color: #E74C3C;
     cursor: pointer;
 }
@@ -80,43 +77,43 @@
 }
 
 .place-grid .place-item {
+    position: relative;
+    height: 350px;
+    background-image: url('../images/sample-library.jpeg');
+    background-repeat: no-repeat;
+    background-size: cover;
     border: 1px solid rgba(189, 195, 199, 0.5);
     text-decoration: none;
-    color: #858585;
-}
-
-.place-grid .place-item:hover {
     cursor: pointer;
-    background-color: #f0f0f0;
-    transition: background-color 0.3s ease;
-}
-
-.place-grid .place-item img {
-    width: 100%;
 }
 
 .place-item .content {
-    padding: 7px 12px 5px 12px;
+    color: white;
+    width: 100%;
+    padding: 10px 12px;
     text-wrap: wrap;
+    bottom: 0;
+    position: absolute;
+    background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
 }
 
 .place-item .content .place-name {
-    color: #1D1D1D;
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 3px;
 }
 
 .place-item .content .ri-map-pin-line {
     display: inline-block;
     vertical-align: middle;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .place-item .content .place-address {
     display: inline-block;
     vertical-align: middle;
-    padding: 10px 0;
     font-weight: 400;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .place-item .content .ratings i {
@@ -125,8 +122,7 @@
 
 /* ========================================= Place Detail ========================================= */
 .place-detail {
-    /* uncomment this */
-    /* display: none; */
+    display: none;
     height: inherit;
     padding: 15px 20px;
     overflow-y: auto;
