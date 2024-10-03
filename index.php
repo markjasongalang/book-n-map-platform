@@ -239,7 +239,7 @@
         console.log(library);
         
         const locationAddress = managePlace.querySelector('#location-address');
-        locationAddress.textContent = library.location_address;
+        locationAddress.innerHTML = library.location_address;
         autoResizeTextarea(locationAddress);
 
         managePlace.querySelector('#short-address').value = library.short_address;
@@ -248,7 +248,7 @@
         managePlace.querySelector('#place-name').value = library.name;
 
         const placeAbout = managePlace.querySelector('#place-about');
-        placeAbout.textContent = library.about;
+        placeAbout.innerHTML = library.about;
         autoResizeTextarea(placeAbout);
 
         document.querySelector('.place-detail').style.display = 'none';
