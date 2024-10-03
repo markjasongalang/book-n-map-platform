@@ -173,9 +173,90 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 
 <script>
+    function showPlaceDetail(library) {
+        const placeDetail = document.querySelector('.place-detail');
+        placeDetail.querySelector('.name').textContent = library.name;
+
+        const date = new Date(library.date_added);
+        // Format the date and time
+        const options = {
+            year: 'numeric',
+            month: 'long', // e.g., "October"
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true // Change to false for 24-hour format
+        };
+        const formattedDate = date.toLocaleString('en-US', options);
+        placeDetail.querySelector('.last-updated').innerHTML = `Last updated: ${formattedDate} by <span class="contributor">${library.username}</span>`;
+
+        placeDetail.querySelector('.address').innerHTML = `<i class="ri-map-pin-line"></i><span class="full">${library.location_address}</span>`;
+
+        const placeImagesPreview = document.querySelector('.place-images-preview');
+        placeImagesPreview.innerHTML = '';
+        library.place_images.forEach(placeImage => {
+            const img = document.createElement('img');
+            img.src = placeImage.file_path.slice(1);
+            img.alt = "Place image";
+            placeImagesPreview.appendChild(img);
+        });
+
+        if (library.about !== "") {
+            placeDetail.querySelector('.about').style.display = 'block';
+            placeDetail.querySelector('.about-content').style.display = 'block';
+            placeDetail.querySelector('.about-content').innerHTML = library.about;
+        } else {
+            placeDetail.querySelector('.about').style.display = 'none';
+            placeDetail.querySelector('.about-content').style.display = 'none';
+            placeDetail.querySelector('.about-content').innerHTML = '';
+        }
+
+        const amenities = placeDetail.querySelector('.amenities');
+        amenities.innerHTML = '<h2>Amenities °˖✧◝(⁰▿⁰)◜✧˖°</h2>';
+        library.amenities.split(", ").forEach(amenity => {
+            const amenityItem = document.createElement('p');
+            amenityItem.classList.add('amenity');
+            amenityItem.innerHTML = `<i class="ri-checkbox-circle-fill"></i>${amenity}`;
+            amenities.appendChild(amenityItem);
+        });
+
+        document.querySelector('.place-list').style.display = 'none';
+        placeDetail.style.display = 'block';
+    }
+
+    function setupMapMarkers(library) {
+        const marker = new mapboxgl.Marker({ color: '#E74C3C' })
+            .setLngLat([library.longitude, library.latitude])
+            .setPopup(new mapboxgl.Popup({
+                offset: 25 ,
+                closeButton: false, // Remove close button
+                closeOnClick: false // Prevent closing when clicking outside
+            })
+            .setHTML('<i class="ri-book-marked-line"></i>'))
+            .addTo(map)
+            .togglePopup();
+        
+        markers.push(marker);
+        
+        marker.getElement().addEventListener('click', () => {
+            map.setCenter([library.longitude, library.latitude]);
+            map.setZoom(14);
+
+            markers.forEach(current => {
+                if (current !== marker) {
+                    // remove() only removes the marker from being displayed on the map, but doesn't alter the markers array
+                    current.remove();
+                }
+            });
+            showPlaceDetail(library);
+        });
+    }
+
+    let markers = [];
     // Retrieve libraries
     document.addEventListener('DOMContentLoaded', () => {
         const placeGrid = document.querySelector('.place-grid');
+
 
         fetch("./api/retrieve-place-list", {
             method: "GET"
@@ -201,75 +282,11 @@
                     placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
 
                     placeItem.addEventListener('click', () => {
-                        const placeDetail = document.querySelector('.place-detail');
-                        placeDetail.querySelector('.name').textContent = library.name;
-
-                        const date = new Date(library.date_added);
-                        // Format the date and time
-                        const options = {
-                            year: 'numeric',
-                            month: 'long', // e.g., "October"
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true // Change to false for 24-hour format
-                        };
-                        const formattedDate = date.toLocaleString('en-US', options);
-                        placeDetail.querySelector('.last-updated').innerHTML = `Last updated: ${formattedDate} by <span class="contributor">${library.username}</span>`;
-
-                        placeDetail.querySelector('.address').innerHTML = `<i class="ri-map-pin-line"></i><span class="full">${library.location_address}</span>`;
-
-                        const placeImagesPreview = document.querySelector('.place-images-preview');
-                        placeImagesPreview.innerHTML = '';
-                        library.place_images.forEach(placeImage => {
-                            const img = document.createElement('img');
-                            img.src = placeImage.file_path.slice(1);
-                            img.alt = "Place image";
-                            placeImagesPreview.appendChild(img);
-                        });
-
-                        if (library.about !== "") {
-                            placeDetail.querySelector('.about').style.display = 'block';
-                            placeDetail.querySelector('.about-content').style.display = 'block';
-                            placeDetail.querySelector('.about-content').innerHTML = library.about;
-                        } else {
-                            placeDetail.querySelector('.about').style.display = 'none';
-                            placeDetail.querySelector('.about-content').style.display = 'none';
-                            placeDetail.querySelector('.about-content').innerHTML = '';
-                        }
-
-                        const amenities = placeDetail.querySelector('.amenities');
-                        amenities.innerHTML = '<h2>Amenities °˖✧◝(⁰▿⁰)◜✧˖°</h2>';
-                        library.amenities.split(", ").forEach(amenity => {
-                            const amenityItem = document.createElement('p');
-                            amenityItem.classList.add('amenity');
-                            amenityItem.innerHTML = `<i class="ri-checkbox-circle-fill"></i>${amenity}`;
-                            amenities.appendChild(amenityItem);
-                        });
-
-                        document.querySelector('.place-list').style.display = 'none';
-                        placeDetail.style.display = 'block';
+                        showPlaceDetail(library);
                     });
 
                     placeGrid.appendChild(placeItem);
-
-                    // const marker = new mapboxgl.Marker({ color: '#E74C3C' })
-                    //     .setLngLat([library.longitude, library.latitude])
-                    //     .setPopup(new mapboxgl.Popup({
-                    //         offset: 25 ,
-                    //         closeButton: false, // Remove close button
-                    //         closeOnClick: false // Prevent closing when clicking outside
-                    //     })
-                    //     .setHTML('<i class="ri-book-marked-line"></i>'))
-                    //     .addTo(map)
-                    //     .togglePopup();
-                    
-                    // marker.getElement().addEventListener('click', () => {
-                    //     map.setCenter([library.longitude, library.latitude]);
-                    //     map.setZoom(14);
-                    //     document.querySelector('.place-list').style.display = 'none';
-                    //     document.querySelector('.place-detail').style.display = 'block';
-                    // });
+                    setupMapMarkers(library);
                 });
 
                 // List with searching
@@ -299,54 +316,7 @@
                         placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
                         
                         placeItem.addEventListener('click', () => {
-                            const placeDetail = document.querySelector('.place-detail');
-                            placeDetail.querySelector('.name').textContent = library.name;
-
-                            const date = new Date(library.date_added);
-                            // Format the date and time
-                            const options = {
-                                year: 'numeric',
-                                month: 'long', // e.g., "October"
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true // Change to false for 24-hour format
-                            };
-                            const formattedDate = date.toLocaleString('en-US', options);
-                            placeDetail.querySelector('.last-updated').innerHTML = `Last updated: ${formattedDate} by <span class="contributor">${library.username}</span>`;
-
-                            placeDetail.querySelector('.address').innerHTML = `<i class="ri-map-pin-line"></i><span class="full">${library.location_address}</span>`;
-
-                            const placeImagesPreview = document.querySelector('.place-images-preview');
-                            placeImagesPreview.innerHTML = '';
-                            library.place_images.forEach(placeImage => {
-                                const img = document.createElement('img');
-                                img.src = placeImage.file_path.slice(1);
-                                img.alt = "Place image";
-                                placeImagesPreview.appendChild(img);
-                            });
-
-                            if (library.about !== "") {
-                                placeDetail.querySelector('.about').style.display = 'block';
-                                placeDetail.querySelector('.about-content').style.display = 'block';
-                                placeDetail.querySelector('.about-content').innerHTML = library.about;
-                            } else {
-                                placeDetail.querySelector('.about').style.display = 'none';
-                                placeDetail.querySelector('.about-content').style.display = 'none';
-                                placeDetail.querySelector('.about-content').innerHTML = '';
-                            }
-
-                            const amenities = placeDetail.querySelector('.amenities');
-                            amenities.innerHTML = '<h2>Amenities °˖✧◝(⁰▿⁰)◜✧˖°</h2>';
-                            library.amenities.split(", ").forEach(amenity => {
-                                const amenityItem = document.createElement('p');
-                                amenityItem.classList.add('amenity');
-                                amenityItem.innerHTML = `<i class="ri-checkbox-circle-fill"></i>${amenity}`;
-                                amenities.appendChild(amenityItem);
-                            });
-
-                            document.querySelector('.place-list').style.display = 'none';
-                            placeDetail.style.display = 'block';
+                            showPlaceDetail(library);
                         });
                         
                         placeGrid.appendChild(placeItem);
@@ -380,6 +350,12 @@
     const backBtns = document.querySelectorAll('.back-btn');
     backBtns.forEach(backBtn => {
         backBtn.addEventListener('click', () => {
+            markers.forEach(marker => marker.remove());
+            markers.forEach(marker => {
+                marker.addTo(map).togglePopup();
+            });
+            map.setZoom(11);
+
             document.querySelector('.place-list').style.display = 'block';
             document.querySelector('.place-detail').style.display = 'none';
             document.querySelector('.manage-place').style.display = 'none';
@@ -394,16 +370,16 @@
     // });
 
     // Mapbox
-    // mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
     
-    // const map = new mapboxgl.Map({
-    //     container: 'map',
-    //     style: 'mapbox://styles/mapbox/streets-v11',
-    //     center: [121.0450, 14.5995], // Center to Metro Manila
-    //     zoom: 11, // Set zoom level
-    //     minZoom: 11, // Minimum zoom level (adjust as needed)
-    //     maxZoom: 18 // Maximum zoom level (adjust as needed)
-    // });
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [121.0450, 14.5995], // Center to Metro Manila
+        zoom: 11, // Set zoom level
+        minZoom: 11, // Minimum zoom level (adjust as needed)
+        maxZoom: 18 // Maximum zoom level (adjust as needed)
+    });
 
     let clickMarkers = [];
     let currentLocMarkers = [];
