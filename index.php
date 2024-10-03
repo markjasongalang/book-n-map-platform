@@ -224,17 +224,20 @@
         placeDetail.style.display = 'block';
     }
 
-    function setupMapMarkers(library) {
+    function setupLibraryMarker(library) {
+        const popup = new mapboxgl.Popup({
+            offset: 25 ,
+            closeButton: false, // Remove close button
+            closeOnClick: false // Prevent closing when clicking outside
+        })
+        .setHTML('<i class="ri-book-marked-line"></i>');
+
         const marker = new mapboxgl.Marker({ color: '#E74C3C' })
             .setLngLat([library.longitude, library.latitude])
-            .setPopup(new mapboxgl.Popup({
-                offset: 25 ,
-                closeButton: false, // Remove close button
-                closeOnClick: false // Prevent closing when clicking outside
-            })
-            .setHTML('<i class="ri-book-marked-line"></i>'))
-            .addTo(map)
-            .togglePopup();
+            .setPopup(popup)
+            .addTo(map);
+
+        popup.addTo(map);
         
         markers.push(marker);
         
@@ -250,6 +253,8 @@
             });
             showPlaceDetail(library);
         });
+
+        return marker;
     }
 
     let markers = [];
@@ -257,14 +262,11 @@
     document.addEventListener('DOMContentLoaded', () => {
         const placeGrid = document.querySelector('.place-grid');
 
-
         fetch("./api/retrieve-place-list", {
             method: "GET"
         })
         .then(response => response.json())
         .then(data => {
-            // console.log(data);
-
             // Initial list
             if (data.success) {
                 data.places.forEach(library => {
@@ -272,21 +274,28 @@
                     placeItem.classList.add('place-item');
                     
                     placeItem.innerHTML = `
-                        <div class="content">
-                            <h3 class="place-name">${library.name}</h3>
-                            <i class="ri-map-pin-line"></i>
-                            <h5 class="place-address">${library.short_address}</h5>
-                        </div>
+                    <div class="content">
+                    <h3 class="place-name">${library.name}</h3>
+                    <i class="ri-map-pin-line"></i>
+                    <h5 class="place-address">${library.short_address}</h5>
+                    </div>
                     `;
-
+                    
                     placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
-
+                    
+                    const marker = setupLibraryMarker(library);
+                    
                     placeItem.addEventListener('click', () => {
+                        markers.forEach(current => current.remove());
+                        marker.addTo(map);
+
+                        map.setCenter([library.longitude, library.latitude]);
+                        map.setZoom(14);
+
                         showPlaceDetail(library);
                     });
 
                     placeGrid.appendChild(placeItem);
-                    setupMapMarkers(library);
                 });
 
                 // List with searching
@@ -301,6 +310,9 @@
                     // Clear existing items
                     placeGrid.innerHTML = '';
 
+                    markers.forEach(marker => marker.remove());
+                    markers = []; 
+
                     filteredLibraries.forEach(library => {
                         const placeItem = document.createElement('div');
                         placeItem.classList.add('place-item');
@@ -314,8 +326,16 @@
                         `;
 
                         placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
+
+                        const marker = setupLibraryMarker(library);
                         
                         placeItem.addEventListener('click', () => {
+                            markers.forEach(current => current.remove());
+                            marker.addTo(map);
+
+                            map.setCenter([library.longitude, library.latitude]);
+                            map.setZoom(14);
+
                             showPlaceDetail(library);
                         });
                         
@@ -333,19 +353,6 @@
         .catch(error => console.error('Error:', error));
     });
 
-    // Prevent search place from refreshing the page
-    document.querySelector('#search-place-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-    });
-
-    const addLibrary = document.querySelector('.add-library');
-    if (addLibrary !== null) {
-        addLibrary.addEventListener('click', () => {
-            document.querySelector('.manage-place').style.display = 'block';
-            document.querySelector('.place-list').style.display = 'none';
-        });
-    }
-
     // Go back to place list
     const backBtns = document.querySelectorAll('.back-btn');
     backBtns.forEach(backBtn => {
@@ -361,6 +368,19 @@
             document.querySelector('.manage-place').style.display = 'none';
         });
     });
+
+    // Prevent search place from refreshing the page
+    document.querySelector('#search-place-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+    });
+
+    const addLibrary = document.querySelector('.add-library');
+    if (addLibrary !== null) {
+        addLibrary.addEventListener('click', () => {
+            document.querySelector('.manage-place').style.display = 'block';
+            document.querySelector('.place-list').style.display = 'none';
+        });
+    }
 
     // Close newsletter
     // const newsletter = document.querySelector('.newsletter');
