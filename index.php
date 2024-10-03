@@ -375,8 +375,8 @@
             currentLocMarkers.forEach(currentLocMarker => currentLocMarker.remove());
             currentLocMarkers = [];
             disableMapClick();
-            
-            // TODO: Clear form
+            document.querySelector('#manage-place-form').reset();
+            resetManagePlaceForm();
         });
     });
 
@@ -618,6 +618,15 @@
         });
     });
 
+    function resetManagePlaceForm() {
+        document.querySelector('#image-preview').innerHTML = '';
+        document.querySelector('#amenities-list').innerHTML = '';
+        document.querySelector('.location-error').textContent = "";
+        document.querySelector('.name-error').textContent = "";
+        document.querySelector('.place-images-error').textContent = "";
+        document.querySelector('.amenities-error').textContent = "";
+    }
+
     // Manage place form
     document.querySelector('#manage-place-form').addEventListener('submit', (e) => {
         e.preventDefault(); // Prevent the default form submission
@@ -642,13 +651,7 @@
             locationAddress.disabled = true;
             if (data.success) {
                 e.target.reset();
-                document.querySelector('#image-preview').innerHTML = '';
-                document.querySelector('#amenities-list').innerHTML = '';
-
-                document.querySelector('.location-error').textContent = "";
-                document.querySelector('.name-error').textContent = "";
-                document.querySelector('.place-images-error').textContent = "";
-                document.querySelector('.amenities-error').textContent = "";
+                resetManagePlaceForm();
 
                 document.querySelector('.manage-place').style.display = 'none';
                 document.querySelector('.place-list').style.display = 'block';
