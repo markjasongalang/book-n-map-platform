@@ -18,7 +18,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Book n' Map - <?php echo $title ?></title>
+        <title>Book n' Map (Beta) - <?php echo $title ?></title>
 
         <!-- Website Icon -->
         <link rel="icon" href="./images/website-icon.png" type="image/png">

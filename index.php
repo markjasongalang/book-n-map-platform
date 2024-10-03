@@ -104,6 +104,10 @@
                 Consectetur neque error in doloribus amet. Deleniti inventore eaque tenetur voluptates, repellat omnis suscipit impedit incidunt ad atque quos obcaecati accusamus, velit facilis. Rem officiis, debitis quasi ipsum reiciendis ullam?</p>
             </div>
         </div> -->
+
+        <?php if (isset($_SESSION['username'])) { ?>
+            <p class="edit-place-redirect"><i class="ri-pencil-line"></i>Edit place</p>
+        <?php } ?>
     </div>
 
     <!-- Manage Place -->
@@ -220,8 +224,37 @@
             amenities.appendChild(amenityItem);
         });
 
+        document.querySelector('.edit-place-redirect').addEventListener('click', () => {
+            enableMapClick();
+            editPlace(library);
+        });
+
         document.querySelector('.place-list').style.display = 'none';
         placeDetail.style.display = 'block';
+    }
+
+    function editPlace(library) {
+        const managePlace = document.querySelector('.manage-place');
+
+        console.log(library);
+        
+        const locationAddress = managePlace.querySelector('#location-address');
+        locationAddress.textContent = library.location_address;
+        autoResizeTextarea(locationAddress);
+
+        managePlace.querySelector('#short-address').value = library.short_address;
+        managePlace.querySelector('#latitude').value = library.latitude;
+        managePlace.querySelector('#longitude').value = library.longitude;
+        managePlace.querySelector('#place-name').value = library.name;
+
+        const placeAbout = managePlace.querySelector('#place-about');
+        placeAbout.textContent = library.about;
+        autoResizeTextarea(placeAbout);
+
+        document.querySelector('.place-detail').style.display = 'none';
+        managePlace.style.display = 'block';
+
+        // TODO: Don't forget to clear manage place form after
     }
 
     function setupLibraryMarker(library) {
@@ -442,6 +475,9 @@
         currentLocMarkers.forEach(marker => marker.remove());
         currentLocMarkers = []; // Reset the markers array
 
+        // Clear displayed markers
+        markers.forEach(marker => marker.remove());
+
         const lngLat = e.lngLat; // Get the clicked coordinates
 
         // Clear existing markers
@@ -493,6 +529,9 @@
         // Clear clicked markers
         clickMarkers.forEach(marker => marker.remove());
         clickMarkers = []; // Reset the markers array
+
+        // Clear displayed markers
+        markers.forEach(marker => marker.remove());
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
@@ -673,14 +712,13 @@
     let selectedFiles = []; // Array to hold the currently selected files
 
     // Function to preview selected images
-    const previewImages = (files) => {
-        // Clear the current previews
-        previewContainer.innerHTML = '';
+    const previewImages = (newFiles) => {
+        const newSelectedFiles = Array.from(newFiles);
 
-        // Update the selectedFiles array
-        selectedFiles = Array.from(files);
+        // Update the selectedFiles array without overriding existing files
+        selectedFiles = [...selectedFiles, ...newSelectedFiles];
 
-        for (const file of selectedFiles) {
+        newSelectedFiles.forEach((file) => {
             const reader = new FileReader();
             const listItem = document.createElement("li");
 
@@ -695,10 +733,10 @@
                     // Remove the item from the preview
                     listItem.remove();
 
-                    // Remove the file from the selectedFiles array
-                    selectedFiles = selectedFiles.filter(selectedFile => selectedFile !== file);
-                    
-                    // Update the file input
+                    // Remove the file from selectedFiles array
+                    selectedFiles = selectedFiles.filter(f => f !== file);
+
+                    // Update the file input after removal
                     updateFileInput();
                 };
                 listItem.appendChild(removeBtn);
@@ -707,18 +745,18 @@
             };
 
             reader.readAsDataURL(file);
-        }
+        });
+
+        // Update the file input after adding new files
+        updateFileInput();
     };
 
     // Function to update the file input based on selectedFiles
     const updateFileInput = () => {
-        // Create a new DataTransfer object to hold the updated files
         const dataTransfer = new DataTransfer();
 
         // Add all remaining files in selectedFiles to the DataTransfer object
-        for (const file of selectedFiles) {
-            dataTransfer.items.add(file);
-        }
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
 
         // Update the input element's files
         fileInput.files = dataTransfer.files;
@@ -726,6 +764,7 @@
 
     // Handle file selection
     fileInput.addEventListener("change", function () {
+        // Pass only the newly selected files
         previewImages(fileInput.files);
     });
 
@@ -733,6 +772,7 @@
     addFileBtn.addEventListener("click", () => {
         fileInput.click(); // Trigger the input when the button is clicked
     });
+
 
     // Make amenities sortable
     function addAmenity() {

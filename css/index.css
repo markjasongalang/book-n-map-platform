@@ -308,6 +308,19 @@
     line-height: 2;
 }
 
+.place-detail .edit-place-redirect {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 13px;
+    color: #858585;
+    cursor: pointer;
+}
+
+.place-detail .edit-place-redirect i {
+    font-size: 15px;
+    margin-right: 3px;
+}
+
 /* ========================================= Manage Place ========================================= */
 .manage-place {
     display: none;
