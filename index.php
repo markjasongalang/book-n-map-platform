@@ -357,15 +357,26 @@
     const backBtns = document.querySelectorAll('.back-btn');
     backBtns.forEach(backBtn => {
         backBtn.addEventListener('click', () => {
+            // Handle UI changes
+            document.querySelector('.place-list').style.display = 'block';
+            document.querySelector('.place-detail').style.display = 'none';
+            document.querySelector('.manage-place').style.display = 'none';
+
+            // From: Place list or detail
             markers.forEach(marker => marker.remove());
             markers.forEach(marker => {
                 marker.addTo(map).togglePopup();
             });
             map.setZoom(11);
 
-            document.querySelector('.place-list').style.display = 'block';
-            document.querySelector('.place-detail').style.display = 'none';
-            document.querySelector('.manage-place').style.display = 'none';
+            // From: Manage place
+            clickMarkers.forEach(clickMarker => clickMarker.remove());
+            clickMarkers = [];
+            currentLocMarkers.forEach(currentLocMarker => currentLocMarker.remove());
+            currentLocMarkers = [];
+            disableMapClick();
+            
+            // TODO: Clear form
         });
     });
 
@@ -379,6 +390,9 @@
         addLibrary.addEventListener('click', () => {
             document.querySelector('.manage-place').style.display = 'block';
             document.querySelector('.place-list').style.display = 'none';
+            
+            markers.forEach(marker => marker.remove());
+            enableMapClick();
         });
     }
 
@@ -403,61 +417,74 @@
 
     let clickMarkers = [];
     let currentLocMarkers = [];
+    let isMapClickEnabled = false;
 
-    // savePlaceUsingMapClick();
+    function handleMapClick(e) {
+        savePlaceUsingMapClick(e);
+    }
 
-    function savePlaceUsingMapClick() {
-        // Add click event to the map
-        map.on('click', (e) => {
+    function enableMapClick() {
+        if (!isMapClickEnabled) {
+            map.on('click', handleMapClick);
+            isMapClickEnabled = true;
+        }
+    }
 
-            // Clear current location markers
-            currentLocMarkers.forEach(marker => marker.remove());
-            currentLocMarkers = []; // Reset the markers array
+    function disableMapClick() {
+        if (isMapClickEnabled) {
+            map.off('click', handleMapClick);
+            isMapClickEnabled = false;
+        }
+    }
 
-            const lngLat = e.lngLat; // Get the clicked coordinates
+    function savePlaceUsingMapClick(e) {
+        // Clear current location markers
+        currentLocMarkers.forEach(marker => marker.remove());
+        currentLocMarkers = []; // Reset the markers array
 
-            // Clear existing markers
-            clickMarkers.forEach(marker => marker.remove());
-            clickMarkers = []; // Reset the markers array
+        const lngLat = e.lngLat; // Get the clicked coordinates
 
-            // Add a new marker at the clicked location
-            const newMarker = new mapboxgl.Marker({ color: '#E74C3C' })
-                .setLngLat([lngLat.lng, lngLat.lat])
-                .addTo(map);
+        // Clear existing markers
+        clickMarkers.forEach(marker => marker.remove());
+        clickMarkers = []; // Reset the markers array
+
+        // Add a new marker at the clicked location
+        const newMarker = new mapboxgl.Marker({ color: '#E74C3C' })
+            .setLngLat([lngLat.lng, lngLat.lat])
+            .addTo(map);
+
+        // Store the new marker in the array
+        clickMarkers.push(newMarker);
+
+        // Call the OpenStreetMap Nominatim reverse geocoding API
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lngLat.lat}&lon=${lngLat.lng}&format=json`)
+        .then(response => response.json())
+        .then(data => {
+            // console.log(`${data.address.city}, ${data.address.region}`);
+            // console.log(data);
+
+            // Extract the address from the response
+            const placeName = data.display_name || "No address found";
             
-            // Store the new marker in the array
-            clickMarkers.push(newMarker);
+            // Display full address in the disabled input field
+            const locationAddress = document.querySelector('#location-address');
+            locationAddress.value = placeName;
+            
+            // Short address
+            const shortAddress = `${data.address.city || data.address.town}, ${data.address.region}` || "No address found";
+            document.querySelector('#short-address').value = shortAddress;
 
-            // Call the OpenStreetMap Nominatim reverse geocoding API
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lngLat.lat}&lon=${lngLat.lng}&format=json`)
-                .then(response => response.json())
-                .then(data => {
-                    // console.log(`${data.address.city}, ${data.address.region}`);
-                    // console.log(data);
+            // Coordinates
+            const latitude = data.lat;
+            const longitude = data.lon;
+            document.querySelector('#latitude').value = latitude;
+            document.querySelector('#longitude').value = longitude;
 
-                    // Extract the address from the response
-                    const placeName = data.display_name || "No address found";
-                    
-                    // Display full address in the disabled input field
-                    const locationAddress = document.querySelector('#location-address');
-                    locationAddress.value = placeName;
-                    
-                    // Short address
-                    const shortAddress = `${data.address.city || data.address.town}, ${data.address.region}` || "No address found";
-                    document.querySelector('#short-address').value = shortAddress;
-
-                    // Coordinates
-                    const latitude = data.lat;
-                    const longitude = data.lon;
-                    document.querySelector('#latitude').value = latitude;
-                    document.querySelector('#longitude').value = longitude;
-
-                    autoResizeTextarea(locationAddress);
-                })
-                .catch(error => {
-                    console.error('Error with reverse geocoding:', error);
-                    document.getElementById('location-address').value = "Error finding the address";
-                });
+            autoResizeTextarea(locationAddress);
+        })
+        .catch(error => {
+            console.error('Error with reverse geocoding:', error);
+            document.getElementById('location-address').value = "Error finding the address";
         });
     }
 
