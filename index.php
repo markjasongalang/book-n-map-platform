@@ -590,7 +590,20 @@
 
     function autoResizeTextarea(textarea) {
         textarea.style.height = 'auto'; // Reset the height
-        textarea.style.height = textarea.scrollHeight + 'px'; // Set to the new height
+        /*
+            - Using setTimeout with a delay of 0 milliseconds effectively places 
+            the resizing of the textarea at the end of the event queue.
+
+            - Using setTimeout with a delay of 0 milliseconds is a handy trick 
+            in JavaScript. It allows you to defer execution until the current 
+            call stack is clear, effectively waiting for the browser to complete
+            its rendering before proceeding with the next action. This is 
+            useful for tasks like resizing elements or updating the UI to ensure 
+            they reflect the latest state accurately.
+        */
+        setTimeout(() => {
+            textarea.style.height = textarea.scrollHeight + 'px'; // Set to the new height
+        }, 0);
     }
 
     // // Function to fetch directions and display the route
