@@ -1,6 +1,6 @@
 <?php
-    $title = "Confirm Email";
-    include './partials/auth-header.php';
+$title = "Confirm Email";
+include './partials/auth-header.php';
 ?>
 
 <div class="container">
@@ -11,8 +11,8 @@
         <label for="verification-code">Verification Code<span class="special-asterisk">*</span></label>
         <p class="verification-guidelines">
             We've sent a verification code to <span class="highlight email"></span>.
-            Please check your inbox and enter the code below to 
-            complete your registration. The code expires after 
+            Please check your inbox and enter the code below to
+            complete your registration. The code expires after
             <span class="highlight">10 minutes</span>.
         </p>
 
@@ -24,7 +24,7 @@
     </form>
 
     <p class="change-email">Change Email</p>
-    
+
     <form method="POST" class="update-email-form hide">
         <input id="new-email" class="new-email" name="new_email" type="email" placeholder="Enter new email">
         <p class="change-email-status status"></p>
@@ -34,53 +34,53 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded',() => {
+    document.addEventListener('DOMContentLoaded', () => {
         // Redirect to home page if already signed in
         fetch('./api/handle-confirm-email', {
-            method: 'GET',
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.redirect) {
-                window.location.href = data.url;
-            } else if (data.email) {
-                document.querySelector('.email').textContent = data.email;
-            }
-        })
-        .catch(error => console.error('Error:', error));
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.url;
+                } else if (data.email) {
+                    document.querySelector('.email').textContent = data.email;
+                }
+            })
+            .catch(error => console.error('Error:', error));
     });
 
     // Verify email form
     const verifyEmailForm = document.querySelector('#verify-email-form');
     verifyEmailForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const formData = new FormData(e.target);
         formData.append(e.submitter.name, true);
         // console.log(e.submitter.name);
 
         fetch("./api/handle-confirm-email", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.new_code_success) {
-                document.querySelector('.verification-code-status').textContent = data.status;
-            } else if (data.verif_code_success) {
-                window.location.href = data.url;
-            } else {
-                document.querySelector('.verification-code-status').textContent = data.errors.new_code_err || data.errors.verif_code_err;
-            }
-        })
-        .catch(error => console.error('Error:', error));
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.new_code_success) {
+                    document.querySelector('.verification-code-status').textContent = data.status;
+                } else if (data.verif_code_success) {
+                    window.location.href = data.url;
+                } else {
+                    document.querySelector('.verification-code-status').textContent = data.errors.new_code_err || data.errors.verif_code_err;
+                }
+            })
+            .catch(error => console.error('Error:', error));
     });
 
     // Toggle visibility of update email form
     const changeEmail = document.querySelector('.change-email');
     changeEmail.addEventListener('click', () => {
         const updateEmailForm = document.querySelector('.update-email-form');
-        
+
         if (!updateEmailForm.classList.contains('hide')) {
             changeEmail.textContent = 'Change Email';
         } else {
@@ -93,29 +93,29 @@
     const updateEmailForm = document.querySelector('.update-email-form');
     updateEmailForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const formData = new FormData(e.target);
         formData.append(e.submitter.name, true);
         // console.log(e.submitter.name);
 
         fetch("./api/handle-confirm-email", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.update_email_success) {
-                document.querySelector('.email').textContent = data.new_email;
-                document.querySelector('.change-email').textContent = 'Change Email';
-                updateEmailForm.style.display = "none";
-            } else {
-                document.querySelector('.change-email-status').textContent = data.errors.update_email_err;
-            }
-        })
-        .catch(error => console.error('Error:', error));
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.update_email_success) {
+                    document.querySelector('.email').textContent = data.new_email;
+                    document.querySelector('.change-email').textContent = 'Change Email';
+                    updateEmailForm.style.display = "none";
+                } else {
+                    document.querySelector('.change-email-status').textContent = data.errors.update_email_err;
+                }
+            })
+            .catch(error => console.error('Error:', error));
     });
 </script>
 
 <?php
-    include './partials/auth-footer.php';
+include './partials/auth-footer.php';
 ?>

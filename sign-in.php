@@ -1,6 +1,6 @@
 <?php
-    $title = "Sign In";
-    include './partials/auth-header.php';
+$title = "Sign In";
+include './partials/auth-header.php';
 ?>
 
 <div class="container">
@@ -10,11 +10,11 @@
     <form id="sign-in-form" method="post">
         <label for="username">Username</label>
         <input class="username" name="username" type="text" placeholder="Enter your username"><br>
-        
+
         <label for="password">Password</label>
         <input class="password" name="password" type="password" placeholder="Enter your password"><br>
         <p class="auth-error status"></p>
-        
+
         <input class="submit" name="sign_in" type="submit" value="Sign In">
     </form>
 
@@ -25,15 +25,15 @@
     document.addEventListener('DOMContentLoaded', () => {
         // Redirect to home page if already signed in
         fetch('./api/authenticate', {
-            method: 'GET',
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.redirect) {
-                window.location.href = data.url;
-            }
-        })
-        .catch(error => console.error('Error:', error));
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.url;
+                }
+            })
+            .catch(error => console.error('Error:', error));
     });
 
     // Sign-in form
@@ -43,21 +43,21 @@
         const formData = new FormData(e.target);
 
         fetch("./api/authenticate", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = data.url;
-            } else {
-                document.querySelector('.auth-error').textContent = data.errors.cred_error;
-            }
-        })
-        .catch(error => console.error('Error:', error));
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.url;
+                } else {
+                    document.querySelector('.auth-error').textContent = data.errors.cred_error;
+                }
+            })
+            .catch(error => console.error('Error:', error));
     });
 </script>
 
 <?php
-    include './partials/auth-footer.php';
+include './partials/auth-footer.php';
 ?>

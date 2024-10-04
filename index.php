@@ -1,9 +1,9 @@
 <?php
-    $title = "A community-driven platform for quiet spaces";
-    $css_file_name = "index";
+$title = "A community-driven platform for quiet spaces";
+$css_file_name = "index";
 
-    include 'connection.php';
-    include './partials/header.php';
+include 'connection.php';
+include './partials/header.php';
 
 ?>
 
@@ -50,7 +50,7 @@
 
         <p class="last-updated"></p>
         <p class="address"></p>
-        
+
         <div class="place-images-preview">
             <!-- <img src="./images/sample-library.jpeg" alt="">
             <img src="./images/sample-library-2.jpg" alt="">
@@ -58,10 +58,10 @@
             <img src="./images/sample-library-4.jpg" alt="">
             <img src="./images/sample-library-2.jpg" alt=""> -->
         </div>
-        
+
         <h2 class="about">About</h2>
         <p class="about-content"></p>
-        
+
         <div class="amenities">
             <!-- <h2>Amenities °˖✧◝(⁰▿⁰)◜✧˖°</h2>
             <p class="amenity"><i class="ri-checkbox-circle-fill"></i>Free WiFi</p>
@@ -116,6 +116,8 @@
         <h2>Save Library</h2>
 
         <form id="manage-place-form" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="library_id" id="library-id">
+
             <label for="location-address">Location<span class="special-asterisk">*</span></label>
             <p class="note">Note: You can click <span class="highlight">anywhere on the map</span> - or more simply you can just <span class="highlight">click the button below</span> if you are at the location right now:</p>
             <i class="ri-map-pin-line"></i><button type="button" class="current-loc-btn">Use my current location</button>
@@ -125,14 +127,14 @@
             <input type="text" name="latitude" id="latitude" hidden>
             <input type="text" name="longitude" id="longitude" hidden>
             <p class="location-error status"></p>
-            
+
             <label for="place-name">Name<span class="special-asterisk">*</span></label>
             <input id="place-name" name="place_name" type="text" placeholder="Enter name of place">
             <p class="name-error status"></p>
-            
+
             <label for="place-about">About</label>
             <textarea class="dynamic-textarea" name="place_about" id="place-about" placeholder="What do you know about this place? (optional)"></textarea>
-            
+
             <label for="file-upload">Images<span class="special-asterisk">*</span></label>
             <input type="file" name="place_images[]" id="file-upload" multiple accept="image/*" hidden>
             <p class="place-images-error status"></p>
@@ -140,7 +142,8 @@
             <ul id="image-preview" class="sortable">
                 <!-- Preview images will be added here -->
             </ul>
-            
+            <input type="hidden" name="existing_images" id="existing-images">
+
             <label class="amenities-label">Amenities<span class="special-asterisk">*</span></label>
             <p class="amenities-error status"></p>
             <p class="note">Note: You can drag the amenities to change their order.</p>
@@ -224,7 +227,7 @@
             amenities.appendChild(amenityItem);
         });
 
-        document.querySelector('.edit-place-redirect').addEventListener('click', () => {
+        document.querySelector('.edit-place-redirect')?.addEventListener('click', () => {
             enableMapClick();
             editPlace(library);
         });
@@ -236,12 +239,11 @@
     function editPlace(library) {
         const managePlace = document.querySelector('.manage-place');
 
-        console.log(library);
-        
         const locationAddress = managePlace.querySelector('#location-address');
         locationAddress.innerHTML = library.location_address;
         autoResizeTextarea(locationAddress);
 
+        managePlace.querySelector('#library-id').value = library.id;
         managePlace.querySelector('#short-address').value = library.short_address;
         managePlace.querySelector('#latitude').value = library.latitude;
         managePlace.querySelector('#longitude').value = library.longitude;
@@ -251,29 +253,52 @@
         placeAbout.innerHTML = library.about;
         autoResizeTextarea(placeAbout);
 
+        previewContainer.innerHTML = '';
+        existingImageFilePaths = [];
+        library.place_images.forEach(image => {
+            const listItem = document.createElement("li");
+            const img = document.createElement("img");
+            img.src = image.file_path.slice(1);
+            listItem.appendChild(img);
+
+            existingImageFilePaths.push(image.file_path);
+            document.querySelector('#existing-images').value = JSON.stringify(existingImageFilePaths);
+
+            const removeBtn = document.createElement("span");
+            removeBtn.innerHTML = '<i class="ri-close-line"></i>';
+            removeBtn.onclick = () => {
+                listItem.remove();
+                existingImageFilePaths = existingImageFilePaths.filter(path => path !== image.file_path);
+                document.querySelector('#existing-images').value = JSON.stringify(existingImageFilePaths);
+            };
+
+            listItem.appendChild(removeBtn);
+            previewContainer.appendChild(listItem);
+        });
+
         document.querySelector('.place-detail').style.display = 'none';
         managePlace.style.display = 'block';
-
-        // TODO: Don't forget to clear manage place form after
     }
 
     function setupLibraryMarker(library) {
         const popup = new mapboxgl.Popup({
-            offset: 25 ,
-            closeButton: false, // Remove close button
-            closeOnClick: false // Prevent closing when clicking outside
-        })
-        .setHTML('<i class="ri-book-marked-line"></i>');
+                offset: 25,
+                closeButton: false, // Remove close button
+                closeOnClick: false // Prevent closing when clicking outside
+            })
+            .setHTML('<i class="ri-book-marked-line"></i>');
 
-        const marker = new mapboxgl.Marker({ color: '#E74C3C' })
+        const marker = new mapboxgl.Marker({
+                color: '#E74C3C'
+            })
             .setLngLat([library.longitude, library.latitude])
             .setPopup(popup)
             .addTo(map);
 
         popup.addTo(map);
-        
+
         markers.push(marker);
-        
+
         marker.getElement().addEventListener('click', () => {
             map.setCenter([library.longitude, library.latitude]);
             map.setZoom(14);
@@ -296,72 +321,28 @@
         const placeGrid = document.querySelector('.place-grid');
 
         fetch("./api/retrieve-place-list", {
-            method: "GET"
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Initial list
-            if (data.success) {
-                data.places.forEach(library => {
-                    const placeItem = document.createElement('div');
-                    placeItem.classList.add('place-item');
-                    
-                    placeItem.innerHTML = `
+                method: "GET"
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Initial list
+                if (data.success) {
+                    data.places.forEach(library => {
+                        const placeItem = document.createElement('div');
+                        placeItem.classList.add('place-item');
+
+                        placeItem.innerHTML = `
                     <div class="content">
                     <h3 class="place-name">${library.name}</h3>
                     <i class="ri-map-pin-line"></i>
                     <h5 class="place-address">${library.short_address}</h5>
                     </div>
                     `;
-                    
-                    placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
-                    
-                    const marker = setupLibraryMarker(library);
-                    
-                    placeItem.addEventListener('click', () => {
-                        markers.forEach(current => current.remove());
-                        marker.addTo(map);
-
-                        map.setCenter([library.longitude, library.latitude]);
-                        map.setZoom(14);
-
-                        showPlaceDetail(library);
-                    });
-
-                    placeGrid.appendChild(placeItem);
-                });
-
-                // List with searching
-                const searchPlaceInput = document.querySelector('#search-place-input');
-                searchPlaceInput.addEventListener('input', () => {
-                    const searchTerm = searchPlaceInput.value.toLowerCase();
-                    const filteredLibraries = data.places.filter(library => 
-                        library.name.toLowerCase().includes(searchTerm) || 
-                        library.short_address.toLowerCase().includes(searchTerm)
-                    );
-
-                    // Clear existing items
-                    placeGrid.innerHTML = '';
-
-                    markers.forEach(marker => marker.remove());
-                    markers = []; 
-
-                    filteredLibraries.forEach(library => {
-                        const placeItem = document.createElement('div');
-                        placeItem.classList.add('place-item');
-                        
-                        placeItem.innerHTML = `
-                            <div class="content">
-                                <h3 class="place-name">${library.name}</h3>
-                                <i class="ri-map-pin-line"></i>
-                                <h5 class="place-address">${library.short_address}</h5>
-                            </div>
-                        `;
 
                         placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
 
                         const marker = setupLibraryMarker(library);
-                        
+
                         placeItem.addEventListener('click', () => {
                             markers.forEach(current => current.remove());
                             marker.addTo(map);
@@ -371,19 +352,63 @@
 
                             showPlaceDetail(library);
                         });
-                        
+
                         placeGrid.appendChild(placeItem);
                     });
-                });
-            } else {
-                if (data.errors) {
-                    console.log(data.errors);
+
+                    // List with searching
+                    const searchPlaceInput = document.querySelector('#search-place-input');
+                    searchPlaceInput.addEventListener('input', () => {
+                        const searchTerm = searchPlaceInput.value.toLowerCase();
+                        const filteredLibraries = data.places.filter(library =>
+                            library.name.toLowerCase().includes(searchTerm) ||
+                            library.short_address.toLowerCase().includes(searchTerm)
+                        );
+
+                        // Clear existing items
+                        placeGrid.innerHTML = '';
+
+                        markers.forEach(marker => marker.remove());
+                        markers = [];
+
+                        filteredLibraries.forEach(library => {
+                            const placeItem = document.createElement('div');
+                            placeItem.classList.add('place-item');
+
+                            placeItem.innerHTML = `
+                            <div class="content">
+                                <h3 class="place-name">${library.name}</h3>
+                                <i class="ri-map-pin-line"></i>
+                                <h5 class="place-address">${library.short_address}</h5>
+                            </div>
+                        `;
+
+                            placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
+
+                            const marker = setupLibraryMarker(library);
+
+                            placeItem.addEventListener('click', () => {
+                                markers.forEach(current => current.remove());
+                                marker.addTo(map);
+
+                                map.setCenter([library.longitude, library.latitude]);
+                                map.setZoom(14);
+
+                                showPlaceDetail(library);
+                            });
+
+                            placeGrid.appendChild(placeItem);
+                        });
+                    });
                 } else {
-                    console.log(data.message);
+                    if (data.errors) {
+                        console.log(data.errors);
+                    } else {
+                        console.log(data.message);
+                    }
                 }
-            }
-        })
-        .catch(error => console.error('Error:', error));
+            })
+            .catch(error => console.error('Error:', error));
     });
 
     // Go back to place list
@@ -408,7 +433,6 @@
             currentLocMarkers.forEach(currentLocMarker => currentLocMarker.remove());
             currentLocMarkers = [];
             disableMapClick();
-            document.querySelector('#manage-place-form').reset();
             resetManagePlaceForm();
         });
     });
@@ -418,16 +442,13 @@
         e.preventDefault();
     });
 
-    const addLibrary = document.querySelector('.add-library');
-    if (addLibrary !== null) {
-        addLibrary.addEventListener('click', () => {
-            document.querySelector('.manage-place').style.display = 'block';
-            document.querySelector('.place-list').style.display = 'none';
-            
-            markers.forEach(marker => marker.remove());
-            enableMapClick();
-        });
-    }
+    document.querySelector('.add-library')?.addEventListener('click', () => {
+        document.querySelector('.manage-place').style.display = 'block';
+        document.querySelector('.place-list').style.display = 'none';
+
+        markers.forEach(marker => marker.remove());
+        enableMapClick();
+    });
 
     // Close newsletter
     // const newsletter = document.querySelector('.newsletter');
@@ -438,7 +459,7 @@
 
     // Mapbox
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
-    
+
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v11',
@@ -485,7 +506,9 @@
         clickMarkers = []; // Reset the markers array
 
         // Add a new marker at the clicked location
-        const newMarker = new mapboxgl.Marker({ color: '#E74C3C' })
+        const newMarker = new mapboxgl.Marker({
+                color: '#E74C3C'
+            })
             .setLngLat([lngLat.lng, lngLat.lat])
             .addTo(map);
 
@@ -494,37 +517,38 @@
 
         // Call the OpenStreetMap Nominatim reverse geocoding API
         fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lngLat.lat}&lon=${lngLat.lng}&format=json`)
-        .then(response => response.json())
-        .then(data => {
-            // console.log(`${data.address.city}, ${data.address.region}`);
-            // console.log(data);
+            .then(response => response.json())
+            .then(data => {
+                // console.log(`${data.address.city}, ${data.address.region}`);
+                // console.log(data);
 
-            // Extract the address from the response
-            const placeName = data.display_name || "No address found";
-            
-            // Display full address in the disabled input field
-            const locationAddress = document.querySelector('#location-address');
-            locationAddress.value = placeName;
-            
-            // Short address
-            const shortAddress = `${data.address.city || data.address.town}, ${data.address.region}` || "No address found";
-            document.querySelector('#short-address').value = shortAddress;
+                // Extract the address from the response
+                const placeName = data.display_name || "No address found";
 
-            // Coordinates
-            const latitude = data.lat;
-            const longitude = data.lon;
-            document.querySelector('#latitude').value = latitude;
-            document.querySelector('#longitude').value = longitude;
+                // Display full address in the disabled input field
+                const locationAddress = document.querySelector('#location-address');
+                locationAddress.value = placeName;
 
-            autoResizeTextarea(locationAddress);
-        })
-        .catch(error => {
-            console.error('Error with reverse geocoding:', error);
-            document.getElementById('location-address').value = "Error finding the address";
-        });
+                // Short address
+                const shortAddress = `${data.address.city || data.address.town}, ${data.address.region}` || "No address found";
+                document.querySelector('#short-address').value = shortAddress;
+
+                // Coordinates
+                const latitude = data.lat;
+                const longitude = data.lon;
+                document.querySelector('#latitude').value = latitude;
+                document.querySelector('#longitude').value = longitude;
+
+                autoResizeTextarea(locationAddress);
+            })
+            .catch(error => {
+                console.error('Error with reverse geocoding:', error);
+                document.getElementById('location-address').value = "Error finding the address";
+            });
     }
 
     document.querySelector('.current-loc-btn').addEventListener('click', savePlaceUsingCurrentLoc);
+
     function savePlaceUsingCurrentLoc() {
         // Clear clicked markers
         clickMarkers.forEach(marker => marker.remove());
@@ -543,16 +567,18 @@
                 currentLocMarkers = []; // Reset the markers array
 
                 // Optionally, add a marker for the user's location
-                const newMarker = new mapboxgl.Marker({ color: '#E74C3C' })
+                const newMarker = new mapboxgl.Marker({
+                        color: '#E74C3C'
+                    })
                     .setLngLat(userLocation)
                     .addTo(map);
-                
+
                 // Store the new marker in the array
                 currentLocMarkers.push(newMarker);
-                
+
                 // Center to the user's location
                 map.setCenter(userLocation);
-                
+
                 // Optionally, call the reverse geocoding API to get the address
                 fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLocation[1]}&lon=${userLocation[0]}&format=json`)
                     .then(response => response.json())
@@ -671,8 +697,11 @@
     });
 
     function resetManagePlaceForm() {
+        document.querySelector('#manage-place-form').reset();
+
         document.querySelector('#image-preview').innerHTML = '';
         document.querySelector('#amenities-list').innerHTML = '';
+
         document.querySelector('.location-error').textContent = "";
         document.querySelector('.name-error').textContent = "";
         document.querySelector('.place-images-error').textContent = "";
@@ -694,27 +723,33 @@
         //     console.log(`${key} = ${value}`);
         // }
 
-        fetch("./api/manage-place", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            locationAddress.disabled = true;
-            if (data.success) {
-                e.target.reset();
-                resetManagePlaceForm();
+        // console.log(JSON.parse(formData.get('existing_images')));
 
-                document.querySelector('.manage-place').style.display = 'none';
-                document.querySelector('.place-list').style.display = 'block';
-            } else {
-                document.querySelector('.location-error').textContent = data.errors.location_err || "";
-                document.querySelector('.name-error').textContent = data.errors.name_err || "";
-                document.querySelector('.place-images-error').textContent = data.errors.images_err || "";
-                document.querySelector('.amenities-error').textContent = data.errors.amenities_err || "";
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        fetch("./api/manage-place", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                locationAddress.disabled = true;
+                if (data.success) {
+                    resetManagePlaceForm();
+
+                    // TODO: pre-fill amenities
+                    // TODO: update map after submission
+
+                    document.querySelector('.manage-place').style.display = 'none';
+                    document.querySelector('.place-list').style.display = 'block';
+                } else {
+                    console.log(data);
+
+                    document.querySelector('.location-error').textContent = data.errors.location_err || "";
+                    document.querySelector('.name-error').textContent = data.errors.name_err || "";
+                    document.querySelector('.place-images-error').textContent = data.errors.images_err || "";
+                    document.querySelector('.amenities-error').textContent = data.errors.amenities_err || "";
+                }
+            })
+            .catch(error => console.error('Error:', error));
     });
 
     // Preview image uploads
@@ -722,6 +757,7 @@
     const previewContainer = document.getElementById("image-preview");
     const addFileBtn = document.getElementById("add-file-btn");
 
+    let existingImageFilePaths = [];
     let selectedFiles = []; // Array to hold the currently selected files
 
     // Function to preview selected images
@@ -735,7 +771,7 @@
             const reader = new FileReader();
             const listItem = document.createElement("li");
 
-            reader.onload = function (e) {
+            reader.onload = function(e) {
                 const img = document.createElement("img");
                 img.src = e.target.result;
                 listItem.appendChild(img);
@@ -776,7 +812,7 @@
     };
 
     // Handle file selection
-    fileInput.addEventListener("change", function () {
+    fileInput.addEventListener("change", function() {
         // Pass only the newly selected files
         previewImages(fileInput.files);
     });
@@ -801,7 +837,7 @@
         removeBtn.textContent = 'Remove';
         removeBtn.type = 'button';
         removeBtn.classList.add('remove-btn');
-        removeBtn.onclick = function () {
+        removeBtn.onclick = function() {
             this.parentElement.remove(); // Removes the parent div when clicked
         };
 
@@ -817,9 +853,8 @@
         ghostClass: 'sortable-ghost', // Class name for the placeholder element during drag
         handle: '.input-container', // Allows dragging by the entire container
     });
-
 </script>
 
 <?php
-    include './partials/footer.php';
+include './partials/footer.php';
 ?>
