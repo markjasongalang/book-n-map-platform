@@ -276,6 +276,33 @@ include './partials/header.php';
             previewContainer.appendChild(listItem);
         });
 
+        const amenitiesList = document.getElementById('amenities-list');
+        amenitiesList.innerHTML = '';
+        library.amenities.split(",").forEach(amenity => {
+            const container = document.createElement('div');
+            container.classList.add('input-container');
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = amenity;
+            input.name = 'amenities[]'; // This allows you to submit all inputs as an array
+            input.placeholder = 'Enter amenity';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'Remove';
+            removeBtn.type = 'button';
+            removeBtn.classList.add('remove-btn');
+            removeBtn.onclick = function() {
+                this.parentElement.remove(); // Removes the parent div when clicked
+            };
+
+            container.appendChild(input);
+            container.appendChild(removeBtn);
+
+            amenitiesList.appendChild(container);
+        });
+
+
         document.querySelector('.place-detail').style.display = 'none';
         managePlace.style.display = 'block';
     }
@@ -316,9 +343,12 @@ include './partials/header.php';
     }
 
     let markers = [];
+
     // Retrieve libraries
-    document.addEventListener('DOMContentLoaded', () => {
+    function retrieveLibraries() {
         const placeGrid = document.querySelector('.place-grid');
+        // To refresh the UI with new data again
+        placeGrid.innerHTML = '';
 
         fetch("./api/retrieve-place-list", {
                 method: "GET"
@@ -332,12 +362,12 @@ include './partials/header.php';
                         placeItem.classList.add('place-item');
 
                         placeItem.innerHTML = `
-                    <div class="content">
-                    <h3 class="place-name">${library.name}</h3>
-                    <i class="ri-map-pin-line"></i>
-                    <h5 class="place-address">${library.short_address}</h5>
-                    </div>
-                    `;
+                            <div class="content">
+                                <h3 class="place-name">${library.name}</h3>
+                                <i class="ri-map-pin-line"></i>
+                                <h5 class="place-address">${library.short_address}</h5>
+                            </div>
+                        `;
 
                         placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
 
@@ -409,6 +439,10 @@ include './partials/header.php';
                 }
             })
             .catch(error => console.error('Error:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        retrieveLibraries();
     });
 
     // Go back to place list
@@ -736,9 +770,8 @@ include './partials/header.php';
                 locationAddress.disabled = true;
                 if (data.success) {
                     resetManagePlaceForm();
-
-                    // TODO: pre-fill amenities
-                    // TODO: update map after submission
+                    retrieveLibraries();
+                    map.setZoom(11);
 
                     document.querySelector('.manage-place').style.display = 'none';
                     document.querySelector('.place-list').style.display = 'block';
@@ -823,7 +856,6 @@ include './partials/header.php';
     addFileBtn.addEventListener("click", () => {
         fileInput.click(); // Trigger the input when the button is clicked
     });
-
 
     // Make amenities sortable
     function addAmenity() {
