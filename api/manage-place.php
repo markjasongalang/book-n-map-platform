@@ -60,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_place'])) {
         $about = test_input($_POST['place_about']);
     }
 
-    // TODO: Fix checking of images required
+    $existing_images = json_decode($_POST['existing_images'], true);
     if (!isset($_FILES['place_images']) || $_FILES['place_images']['error'][0] === UPLOAD_ERR_NO_FILE) {
-        if ($_POST['existing_images'] == "") {
+        if (empty($existing_images)) {
             $errors['images_err'] = "Images are required";
         }
     }
-    if ($_POST['existing_images'] != "") {
+    if (!empty($existing_images)) {
         $existing_images = json_decode($_POST['existing_images'], true);
     }
 
@@ -121,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_place'])) {
                             name = '$name',
                             about = '$about',
                             amenities = '$amenities_string',
+                            username = '$username',
                             date_updated = CURRENT_TIMESTAMP
                         WHERE id = '$library_id'";
             } else {

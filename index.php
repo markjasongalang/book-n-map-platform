@@ -184,7 +184,7 @@ include './partials/header.php';
         const placeDetail = document.querySelector('.place-detail');
         placeDetail.querySelector('.name').textContent = library.name;
 
-        const date = new Date(library.date_added);
+        const date = new Date(library.date_updated || library.date_added);
         // Format the date and time
         const options = {
             year: 'numeric',
@@ -350,6 +350,8 @@ include './partials/header.php';
         // To refresh the UI with new data again
         placeGrid.innerHTML = '';
 
+        markers.forEach(marker => marker.remove());
+
         fetch("./api/retrieve-place-list", {
                 method: "GET"
             })
@@ -454,11 +456,14 @@ include './partials/header.php';
             document.querySelector('.place-detail').style.display = 'none';
             document.querySelector('.manage-place').style.display = 'none';
 
+            document.querySelector('#search-place-form').reset();
+
             // From: Place list or detail
             markers.forEach(marker => marker.remove());
-            markers.forEach(marker => {
-                marker.addTo(map).togglePopup();
-            });
+            // markers.forEach(marker => {
+            //     marker.addTo(map).togglePopup();
+            // });
+            retrieveLibraries();
             map.setZoom(11);
 
             // From: Manage place
@@ -733,10 +738,17 @@ include './partials/header.php';
     function resetManagePlaceForm() {
         document.querySelector('#manage-place-form').reset();
 
+        document.querySelector('#library-id').value = '';
+        document.querySelector('#file-upload').value = '';
+        document.querySelector('#existing-images').value = '';
+
         document.querySelector('#location-address').innerHTML = '';
         document.querySelector('#place-about').innerHTML = '';
         document.querySelector('#image-preview').innerHTML = '';
         document.querySelector('#amenities-list').innerHTML = '';
+
+        existingImageFilePaths = [];
+        selectedFiles = [];
 
         document.querySelector('.location-error').textContent = "";
         document.querySelector('.name-error').textContent = "";
@@ -770,11 +782,20 @@ include './partials/header.php';
                 locationAddress.disabled = true;
                 if (data.success) {
                     resetManagePlaceForm();
+                    markers.forEach(marker => marker.remove());
                     retrieveLibraries();
                     map.setZoom(11);
 
                     document.querySelector('.manage-place').style.display = 'none';
                     document.querySelector('.place-list').style.display = 'block';
+
+                    clickMarkers.forEach(marker => marker.remove());
+                    clickMarkers = [];
+
+                    currentLocMarkers.forEach(marker => marker.remove());
+                    currentLocMarkers = [];
+
+                    disableMapClick();
                 } else {
                     console.log(data);
 

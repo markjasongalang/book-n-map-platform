@@ -7,7 +7,7 @@ $response = [];
 $errors = [];
 
 try {
-    $sql = "SELECT id, location_address, short_address, latitude, longitude, name, about, amenities, username, date_added FROM libraries ORDER BY date_added DESC";
+    $sql = "SELECT id, location_address, short_address, latitude, longitude, name, about, amenities, username, date_added, date_updated FROM libraries ORDER BY date_added DESC";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
