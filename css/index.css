@@ -536,9 +536,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    /* remove this */
-    display: none;
+    z-index: 2;
 }
 
 .newsletter .content {
@@ -601,4 +599,9 @@
 .newsletter .close-btn:hover {
     color: #1D1D1D;
     cursor: pointer;
+}
+
+.newsletter .content span {
+    display: none;
+    font-weight: 600;
 }

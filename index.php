@@ -158,7 +158,7 @@ include './partials/header.php';
 </div>
 
 
-<!-- <div class="newsletter">
+<div class="newsletter">
     <div></div>
 
     <div class="content">
@@ -166,20 +166,67 @@ include './partials/header.php';
             <h5>Subscribe to our newsletter</h5>
             <p>Get latest updates and news</p>
         </div>
-        
-        <form action="#" method="post">
+
+        <form id="newsletter-form" method="POST">
             <input name="email" class="email" type="text" placeholder="Enter email">
-            <input class="subscribe-btn" type="submit" value="Subscribe (•‿•)">
+            <input class="subscribe-btn" name="newsletter_subscribe" type="submit" value="Subscribe (•‿•)">
+            <span class="status"></span>
         </form>
     </div>
 
     <i class="ri-close-line close-btn"></i>
-</div> -->
+</div>
 
-<!-- Sortable JS: Drag to change order of image file uploads -->
+<!-- Sortable JS: Drag to change order of items in a list -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 
 <script>
+    // Newsletter functionalities:
+    const newsletter = document.querySelector('.newsletter');
+    const newsletterForm = document.querySelector('#newsletter-form');
+    const newsletterStatus = newsletterForm.querySelector('.status');
+
+    // Hide/display
+    if (localStorage.getItem('newsletter_subscribed') === null) {
+        newsletter.style.display = 'flex';
+    } else {
+        newsletter.style.display = 'none';
+    }
+
+    // Subscribe
+    newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        formData.append('newsletter_subscribe', true);
+
+        fetch('./api/newsletter-subscribe', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                newsletterStatus.style.display = 'inline';
+
+                if (data.success) {
+                    localStorage.setItem('newsletter_subscribed', true);
+                    newsletterStatus.textContent = data.message;
+                    setTimeout(() => {
+                        newsletter.style.display = 'none';
+                    }, 1800);
+                } else {
+                    newsletterStatus.textContent = data.errors.email_err || data.errors.db_err;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    // Close
+    newsletter.querySelector('.close-btn').addEventListener('click', () => {
+        localStorage.setItem('newsletter_subscribed', true);
+        newsletter.style.display = 'none';
+    });
+
     function showPlaceDetail(library) {
         const placeDetail = document.querySelector('.place-detail');
         placeDetail.querySelector('.name').textContent = library.name;
@@ -488,13 +535,6 @@ include './partials/header.php';
         markers.forEach(marker => marker.remove());
         enableMapClick();
     });
-
-    // Close newsletter
-    // const newsletter = document.querySelector('.newsletter');
-    // const closeBtn = newsletter.querySelector('.close-btn');
-    // closeBtn.addEventListener('click', () => {
-    //     newsletter.style.display = 'none';
-    // });
 
     // Mapbox
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFya2phc29uZ2FsYW5nd29yayIsImEiOiJjbTFrd2VxeWEwMmk3Mmtvdnhld2syazllIn0.OW2XEC08515w9p7HVcAhBA';
