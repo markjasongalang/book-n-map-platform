@@ -699,6 +699,8 @@ include './partials/header.php';
     function resetManagePlaceForm() {
         document.querySelector('#manage-place-form').reset();
 
+        document.querySelector('#location-address').innerHTML = '';
+        document.querySelector('#place-about').innerHTML = '';
         document.querySelector('#image-preview').innerHTML = '';
         document.querySelector('#amenities-list').innerHTML = '';
 
