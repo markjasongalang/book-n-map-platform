@@ -137,6 +137,14 @@ body {
     color: #858585;
 }
 
+.container #loading {
+    display: none;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #EF7E6B;
+}
+
 /* ===================== /confirm-email ===================== */
 .container form .verification-guidelines {
     font-size: 14px;

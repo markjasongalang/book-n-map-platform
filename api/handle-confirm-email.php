@@ -154,6 +154,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['update_email'])) {
     } else {
         $new_email = test_input($_POST['new_email']);
 
+        $sql = "SELECT email FROM users WHERE email = '$new_email'";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            $errors['update_email_err'] = "Email already taken";
+            $response['errors'] = $errors;
+            echo json_encode($response);
+            exit;
+        }
+
         if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
             $errors['update_email_err'] = "Invalid email format";
         } else {

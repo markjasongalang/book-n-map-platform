@@ -39,6 +39,7 @@ include './partials/auth-header.php';
 
         <input class="submit" type="submit" name="register" value="Register">
     </form>
+    <p id="loading">Processing your registration, please wait...</p>
 
     <p class="auth-redirect-label">Already have an account? <a class="auth-redirect-link" href="sign-in">Sign In</a></p>
 </div>
@@ -64,12 +65,16 @@ include './partials/auth-header.php';
 
         const formData = new FormData(e.target);
 
+        document.querySelector('#loading').style.display = 'block';
+
         fetch("./api/handle-register", {
                 method: "POST",
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
+                document.querySelector('#loading').style.display = 'none';
+
                 if (data.success) {
                     window.location.href = data.url;
                 } else {
