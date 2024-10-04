@@ -57,9 +57,26 @@ nav {
     border-bottom: 1px solid rgba(189, 195, 199, 0.5);
 }
 
-nav .logo {
+nav .logo-section .logo {
     height: 46px;
     margin-top: 8px;
+}
+
+nav .logo-section a {
+    display: inline-block;
+    vertical-align: middle;
+    /* text-decoration: none; */
+}
+
+nav .logo-section .suggestions {
+    font-size: 12px;
+    color: #E74C3C;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+nav .logo-section .suggestions:hover {
+    color: #EF7E6B;
 }
 
 nav .menu ul {

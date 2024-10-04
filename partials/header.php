@@ -42,12 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['logout'])) {
 
 <body>
     <nav>
-        <a href="/booknmap">
-            <img class="logo" src="./images/booknmap-logo.png" alt="Book n' map logo">
-        </a>
+
+        <div class="logo-section">
+            <a href="/booknmap">
+                <img class="logo" src="./images/booknmap-logo.png" alt="Book n' map logo">
+            </a>
+            <a class="suggestions" href="https://forms.gle/zF6wZrXQj7JLyr4T7" target="_blank">Share your feedback</a>
+        </div>
 
         <div class="menu">
             <ul>
+
                 <?php if (!isset($_SESSION['username'])) { ?>
                     <li class="sign-in"><a href="sign-in">Sign In</a></li>
                     <li class="register"><a href="register">Register</a></li>
