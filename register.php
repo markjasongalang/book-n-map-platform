@@ -33,8 +33,7 @@ include './partials/auth-header.php';
         <p class="confirm-password-error status"></p>
 
         <input id="agree-cb" class="agree-cb" name="agree_cb" value="accepted" type="checkbox">
-        <!-- TODO: Redirect terms of service and privacy policy to an actual page -->
-        <label class="agree-label" for="agree-cb">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></label><br>
+        <label class="agree-label" for="agree-cb">I agree to the <a href="./terms-of-service" target="_blank">Terms of Service</a> and <a href="./privacy-policy" target="_blank">Privacy Policy</a></label><br>
         <p class="terms-privacy-error status"></p>
 
         <input class="submit" type="submit" name="register" value="Register">
