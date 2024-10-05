@@ -229,7 +229,7 @@ include './partials/header.php';
 
     function showPlaceDetail(library) {
         const placeDetail = document.querySelector('.place-detail');
-        placeDetail.querySelector('.name').textContent = library.name;
+        placeDetail.querySelector('.name').innerHTML = library.name;
 
         const date = new Date(library.date_updated || library.date_added);
         // Format the date and time
@@ -300,7 +300,7 @@ include './partials/header.php';
         managePlace.querySelector('#short-address').value = library.short_address;
         managePlace.querySelector('#latitude').value = library.latitude;
         managePlace.querySelector('#longitude').value = library.longitude;
-        managePlace.querySelector('#place-name').value = library.name;
+        managePlace.querySelector('#place-name').value = decodeHTMLEntities(library.name);
 
         const placeAbout = managePlace.querySelector('#place-about');
         placeAbout.innerHTML = library.about;
