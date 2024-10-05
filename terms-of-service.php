@@ -141,7 +141,7 @@ mso-themetint:166;">
         <div align="center" style="text-align: left;">
             <div class="MsoNormal" data-custom-class="body_text" style="line-height: 1.5;"><span style="font-size:11.0pt;line-height:115%;font-family:Arial;
 Calibri;color:#595959;mso-themecolor:text1;mso-themetint:166;">We operate <bdt class="block-component"></bdt>the website <span style="color: rgb(0, 58, 250);">
-                        <bdt class="question"><a href="https://www.booknmap.live/" target="_blank" data-custom-class="link">https://www.booknmap.live/</a></bdt>
+                        <bdt class="question"><a href="https://www.booknmap.online/" target="_blank" data-custom-class="link">https://www.booknmap.online/</a></bdt>
                     </span> (the <bdt class="block-component"></bdt>"<strong>Site</strong>"<bdt class="statement-end-if-in-editor"></bdt>)<bdt class="block-component"></bdt>
                     <bdt class="block-component"></bdt>, as well as any other related products and services that refer or link to these legal terms (the <bdt class="block-component"></bdt>"<strong>Legal Terms</strong>"<bdt class="statement-end-if-in-editor"></bdt>) (collectively, the <bdt class="block-component"></bdt>"<strong>Services</strong>"<bdt class="statement-end-if-in-editor"></bdt>).<bdt class="block-component"></bdt>
                 </span></div>
