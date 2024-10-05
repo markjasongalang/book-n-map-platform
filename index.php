@@ -60,7 +60,7 @@ include './partials/header.php';
         </div>
 
         <h2 class="about">About</h2>
-        <p class="about-content"></p>
+        <p style="white-space: pre-wrap;" class="about-content"></p>
 
         <div class="amenities">
             <!-- <h2>Amenities °˖✧◝(⁰▿⁰)◜✧˖°</h2>
@@ -283,6 +283,12 @@ include './partials/header.php';
         placeDetail.style.display = 'block';
     }
 
+    function decodeHTMLEntities(str) {
+        const textArea = document.createElement('textarea');
+        textArea.innerHTML = str;
+        return textArea.value;
+    }
+
     function editPlace(library) {
         const managePlace = document.querySelector('.manage-place');
 
@@ -331,7 +337,7 @@ include './partials/header.php';
 
             const input = document.createElement('input');
             input.type = 'text';
-            input.value = amenity;
+            input.value = decodeHTMLEntities(amenity);
             input.name = 'amenities[]'; // This allows you to submit all inputs as an array
             input.placeholder = 'Enter amenity';
 
