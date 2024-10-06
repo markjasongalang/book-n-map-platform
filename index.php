@@ -248,7 +248,7 @@ include './partials/header.php';
 
         const placeImagesPreview = document.querySelector('.place-images-preview');
         placeImagesPreview.innerHTML = '';
-        library.place_images.forEach(placeImage => {
+        library.place_images?.forEach(placeImage => {
             const img = document.createElement('img');
             img.src = placeImage.file_path.slice(1);
             img.alt = "Place image";
@@ -308,7 +308,7 @@ include './partials/header.php';
 
         previewContainer.innerHTML = '';
         existingImageFilePaths = [];
-        library.place_images.forEach(image => {
+        library.place_images?.forEach(image => {
             const listItem = document.createElement("li");
             const img = document.createElement("img");
             img.src = image.file_path.slice(1);
@@ -424,7 +424,11 @@ include './partials/header.php';
                             </div>
                         `;
 
-                        placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
+                        if (library.preview_image_file_path != null) {
+                            placeItem.style.backgroundImage = `url('${library.preview_image_file_path.slice(1)}')`;
+                        } else {
+                            placeItem.style.background = "#1D1D1D";
+                        }
 
                         const marker = setupLibraryMarker(library);
 

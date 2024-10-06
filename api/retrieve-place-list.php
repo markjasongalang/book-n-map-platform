@@ -22,8 +22,12 @@ try {
             while ($image_row = $preview_image_res->fetch_assoc()) {
                 $place_images[] = $image_row;
             }
-            $row['preview_image_file_path'] = $place_images[0]['file_path'];
-            $row['place_images'] = $place_images;
+            if (count($place_images) > 0) {
+                $row['preview_image_file_path'] = $place_images[0]['file_path'];
+                $row['place_images'] = $place_images;
+            } else {
+                $row['place_images'] = NULL;
+            }
 
             $places[] = $row;
         }

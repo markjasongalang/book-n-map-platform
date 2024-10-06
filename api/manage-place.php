@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_place'])) {
     }
 
     $existing_images = json_decode($_POST['existing_images'], true);
+    $existing_images = $existing_images ? $existing_images : [];
     if (!isset($_FILES['place_images']) || $_FILES['place_images']['error'][0] === UPLOAD_ERR_NO_FILE) {
         if (empty($existing_images)) {
             $errors['images_err'] = "Images are required";
