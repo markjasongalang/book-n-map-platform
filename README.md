@@ -5,9 +5,9 @@ or a book lover in search of new reading spots, Book n' Map helps you find the b
 
 ## Features
 
-- [ ] **Discover Libraries**: Easily search and find libraries.
-- [ ] **Community Contributions**: Users can submit new places, add reviews, and suggest edits.
-- [ ] **Map and Directions**: Integrated maps to help users navigate to their chosen location.
+- [x] **Discover Libraries**: Easily search and find libraries.
+- [x] **Community Contributions**: Users can submit new places or edit existing places.
+- [x] **Map View**: Integrated maps to help users to see the locations of the libraries.
 
 ## Tech Stack
 
