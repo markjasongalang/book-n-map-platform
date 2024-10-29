@@ -34,10 +34,21 @@ or a book lover in search of new reading spots, Book n' Map helps you find the b
 - OpenStreetMap (OSM)
 
 ## Screenshots
+### Home
 <img src="screenshots/home.PNG" alt="home page">
+
+### Place Details
 <img src="screenshots/details.PNG" alt="details">
 <img src="screenshots/details-2.PNG" alt="details">
+
+### Add Place
 <img src="screenshots/add-place.PNG" alt="add place">
+
+### Edit Place
 <img src="screenshots/edit-place.PNG" alt="edit place">
+
+### Sign In
 <img src="screenshots/sign-in.PNG" alt="sign in">
+
+### Register
 <img src="screenshots/register.PNG" alt="register">
