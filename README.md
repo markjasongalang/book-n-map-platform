@@ -32,3 +32,12 @@ or a book lover in search of new reading spots, Book n' Map helps you find the b
 
 - Mapbox
 - OpenStreetMap (OSM)
+
+## Screenshots
+<img src="screenshots/home.PNG" alt="home page">
+<img src="screenshots/details.PNG" alt="details">
+<img src="screenshots/details-2.PNG" alt="details">
+<img src="screenshots/add-place.PNG" alt="add place">
+<img src="screenshots/edit-place.PNG" alt="edit place">
+<img src="screenshots/sign-in.PNG" alt="sign in">
+<img src="screenshots/register.PNG" alt="register">
